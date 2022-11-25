@@ -2,6 +2,7 @@ import pygame
 from modules.menus.menu import Menu
 from modules.settings import * 
 from modules.UI.text import *
+from modules.UI.button import *
 
 class MainMenu(Menu):
 	def __init__(self):
@@ -9,7 +10,7 @@ class MainMenu(Menu):
 		self.size = self.display_surface.get_size()
 		self.surface = pygame.Surface(self.size)
 
-		self.test_text = Text(self, pos=("center", 50), size=40)
+		self.test_text = Button(self, pos=("center", 50), size=40, image="images/buttons/play-button.png")
 
 	def on_update(self):
 		self.draw_background(self.surface)
