@@ -16,7 +16,7 @@ class Display:
 		self.delta_time = 0
 		self.clock = pygame.time.Clock()
 
-	def main_loop(self):
+	def main_loop(self): # Check if the user wants to quit and update Game.py
 		while self.running:
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:

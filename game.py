@@ -1,4 +1,5 @@
 import pygame
+from modules.menus.main_menu import MainMenu
 
 class Game:
 	def __init__(self):
@@ -12,8 +13,10 @@ class Game:
 
 		self.current_state = self.states["mainmenu"]()
 
-	def update(self, dt):
+	def update(self, dt): # Update the current state
 		self.delta_time = dt
 
-	def changeState(self, state):
+		self.current_state.update(self.delta_time)
+
+	def changeState(self, state): # Initiate the new state
 		self.current_state = self.states[state]()
