@@ -1,6 +1,8 @@
 import pygame
 from modules.UI.text import Text
 from modules.settings import *
+from shortcuts import *
+import random
 
 class Button(Text):
 	def __init__(self, parent, pos=(0, 0), image=None, size=45):
@@ -12,11 +14,11 @@ class Button(Text):
 
 		self.size = size
 
-		self.image = pygame.image.load(image).convert_alpha()
-
-		self.image = pygame.transform.scale(self.image, (self.image.get_width() * PPP, self.image.get_height() * PPP))
+		self.image = pygame.image.load(image)
 
 		self.pos = super().parse_pos(pos)
+
+		self.rect = scale_rect(self.image.get_rect(center=self.pos), PPP) # Scale the rect so that it matches the size on the screen.
 
 	def update(self, dt):
 		self.delta_time = dt
@@ -24,4 +26,4 @@ class Button(Text):
 		self.draw()
 
 	def draw(self):
-		self.display_surface.blit(self.image, self.pos)
+		self.display_surface.blit(self.image, center(self.pos, self.image))

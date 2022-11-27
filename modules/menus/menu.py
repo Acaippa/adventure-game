@@ -1,8 +1,8 @@
 import pygame
 
 class Menu:
-	def __init__(self):
-		self.display_surface = pygame.display.get_surface()
+	def __init__(self, game):
+		self.display_surface = game.surface
 		self.delta_time = 0
 		self.pos = (0, 0)
 
