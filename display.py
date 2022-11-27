@@ -2,7 +2,7 @@ import pygame
 from game import Game
 
 class Display:
-	def __init__(self, dimentions=(900, 600)):
+	def __init__(self, dimentions=(1360, 800)):
 		pygame.init()
 		self.display_surface = pygame.display.set_mode(dimentions)
 

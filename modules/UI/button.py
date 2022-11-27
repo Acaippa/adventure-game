@@ -5,7 +5,7 @@ from shortcuts import *
 import random
 
 class Button(Text):
-	def __init__(self, parent, pos=(0, 0), image=None, size=45):
+	def __init__(self, parent, pos=(0, 0), image="images/buttons/play-button.png", size=45):
 		self.parent = parent
 
 		self.display_surface = self.parent.surface
@@ -14,7 +14,7 @@ class Button(Text):
 
 		self.size = size
 
-		self.image = pygame.image.load(image)
+		self.image = pygame.image.load(image).convert_alpha()
 
 		self.pos = super().parse_pos(pos)
 
