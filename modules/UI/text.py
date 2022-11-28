@@ -4,6 +4,8 @@ class Text:
 	def __init__(self, parent, pos=(0, 0), text="Lorem ipsum", color="white", size=45):
 		self.parent = parent
 
+		self.parent.item_list.append(self)
+
 		self.display_surface = self.parent.surface
 
 		self.delta_time = 0
