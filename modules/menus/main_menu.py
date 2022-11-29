@@ -10,9 +10,9 @@ class MainMenu(Menu):
 		self.size = self.display_surface.get_size()
 		self.surface = pygame.Surface(self.size)
 
-		self.title_text = Text(self, text="jævlig kult spæll", pos=("center", 50), size=10)
+		self.title_text = Text(self, text="Trehoggeren", pos=("center", 25), size=18)
 
-		self.play_button = Button(self, pos=("center", 60))
+		self.play_button = Button(self, pos=("center", 70))
 
 	def on_update(self):
 		self.draw_background(self.surface)

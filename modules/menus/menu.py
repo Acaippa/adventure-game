@@ -9,6 +9,7 @@ class Menu:
 
 	def update(self, dt):
 		self.delta_time = dt
+
 		self.on_update()
 
 		for item in self.item_list:

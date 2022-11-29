@@ -61,7 +61,7 @@ class Text:
 		return 0
 
 	def update_text(self):
-		self.rendered_font = self.font.render(self.text, True, self.color)
+		self.rendered_font = self.font.render(self.text, False, self.color)
 		self.rendered_font_dimentions = self.rendered_font.get_size()
 
 
