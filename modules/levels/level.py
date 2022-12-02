@@ -16,6 +16,8 @@ class Level:
 
 		self.entity_list = []
 
+		self.obsticle_list = []
+
 		self.camera = Camera(self)
 
 		# TODO: add enemy_list
@@ -48,6 +50,8 @@ class Camera:
 
 		self.entity_list = self.parent.entity_list
 
+		self.obsticle_list = self.parent.obsticle_list
+
 		self.parent = parent
 
 		self.display_surface = self.parent.surface
@@ -66,5 +70,10 @@ class Camera:
 		for entity in sorted(self.entity_list, key = lambda entity: entity.rect.centery):
 			if hasattr(entity, "player"):
 				entity.update(self.delta_time)
-			else:
-				self.parent.surface.blit(entity.image, center(entity.rect.center - self.offset, entity.image)) # Pass in optional position argument to entity.
+				continue
+
+			if hasattr(entity, "obsticle") and entity not in self.obsticle_list: # ! hardware intensive
+				self.obsticle_list.append(entity)
+
+			# pygame.draw.rect(self.display_surface, (255, 255, 255), pygame.Rect(entity.rect.x - self.offset[0], entity.rect.y - self.offset[1], entity.rect.width, entity.rect.height)) draw rect
+			self.parent.surface.blit(entity.image, center(entity.rect.center - self.offset, entity.image)) # Pass in optional position argument to entity.
