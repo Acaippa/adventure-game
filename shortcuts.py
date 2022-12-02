@@ -19,3 +19,6 @@ def scale_rect(rect, scale, divide=False): # Return a scaled rect
 
 def center(p, image): # Center the position to the center of the image by ofsetting the position by have the image dimentions
 	return (p[0] - image.get_width() / 2, p[1] - image.get_height() / 2)
+
+def center_bottom(p, image):
+	return (p[0] - image.get_width() / 2, p[1] - image.get_height())

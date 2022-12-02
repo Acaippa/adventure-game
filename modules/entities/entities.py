@@ -10,16 +10,13 @@ class Entity:
 
 		self.delta_time = 0
 
-	def update(self, dt, pos=None):
+	def update(self, dt):
 		self.delta_time = dt
-		
-		if pos != None:
-			pass
 
 		self.on_update()
 
-	def draw(self):
-		self.on_draw()
+	def draw(self, offset):
+		self.on_draw(offset)
 
 	def fallback(self): # Function that does nothing in order to prevent empty entities from crashing the program
 		print(__name__, "Fallback")
@@ -55,9 +52,9 @@ class Player(Entity):
 	def on_update(self):
 		self.handle_input()
 
-		self.draw()
+		self.draw(0)
 
-	def on_draw(self):
+	def on_draw(self, offset):
 		self.display_surface.blit(self.image, center(self.pos, self.image))
 
 	def handle_input(self): # Handle input AND collision
@@ -72,6 +69,7 @@ class Player(Entity):
 				movement[key]()
 
 
+		# Split movement into two steps making it possible to handle collision in only one direction at a time.
 		self.rect.x += self.direction[0]
 		self.handle_collision("x")
 		self.rect.y += self.direction[1]
@@ -121,7 +119,7 @@ class Tree(Entity):
 
 		self.obsticle = None
 
-	def on_draw(self):
-		self.display_surface.blit(self.image, center(self.pos, self.image))
+	def on_draw(self, offset):
+		self.display_surface.blit(self.image, center_bottom(self.rect.midbottom - offset, self.image))
 
 

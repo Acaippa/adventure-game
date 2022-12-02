@@ -28,7 +28,7 @@ class Level:
 		["1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1"],
 		["1","1","0","0","0","0","0","0","0","0","0","0","0","0","0","1","1","1"],
 		["1","0","1","0","0","0","0","0","0","0","0","0","0","0","0","1","0","1"],
-		["1","0","0","1","p","0","0","0","0","0","0","0","0","0","0","1","0","1"],
+		["1","0","0","1","0","0","0","0","0","0","0","0","0","p","0","1","0","1"],
 		["1","0","0","0","1","0","0","0","0","0","0","0","0","0","0","1","0","1"],
 		["1","0","0","0","0","0","0","0","0","0","0","0","0","0","0","1","0","1"],
 		["1","0","0","1","0","0","0","0","0","0","0","0","0","0","0","1","0","1"],
@@ -85,4 +85,5 @@ class Camera:
 				self.obsticle_list.append(entity)
 
 			# pygame.draw.rect(self.display_surface, (255, 255, 255), pygame.Rect(entity.rect.x - self.offset[0], entity.rect.y - self.offset[1], entity.rect.width, entity.rect.height)) draw rect
-			self.parent.surface.blit(entity.image, center(entity.rect.center - self.offset, entity.image)) # Pass in optional position argument to entity.
+			# self.parent.surface.blit(entity.image, center_bottom(entity.rect.center - self.offset, entity.image)) # Pass in optional position argument to entity.
+			entity.draw(self.offset)
