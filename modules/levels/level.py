@@ -1,5 +1,6 @@
 import pygame
 from modules.levels.map_loader import *
+from shortcuts import *
 
 class Level:
 	def __init__(self, parent):
@@ -14,6 +15,8 @@ class Level:
 		self.player = None
 
 		self.entity_list = []
+
+		self.camera = Camera(self)
 
 		# TODO: add enemy_list
 
@@ -30,11 +33,9 @@ class Level:
 	def update(self, dt):
 		self.delta_time = dt
 
-		self.player.update(self.delta_time) # Update the player
+		self.surface.fill("black")
 
-		# Update the entities in self.entity_list
-		for entity in self.entity_list:
-			entity.update(self.delta_time)
+		self.camera.custom_draw(self.player, self.delta_time)
 
 		self.draw()
 
@@ -43,7 +44,9 @@ class Level:
 
 class Camera:
 	def __init__(self, parent):
-		self.entity_list = [] # House all the entities the camera should draw
+		self.parent = parent
+
+		self.entity_list = self.parent.entity_list
 
 		self.parent = parent
 
@@ -58,7 +61,10 @@ class Camera:
 	def custom_draw(self, player, dt):
 		self.delta_time = dt
 
-		self.offset.x, self.offset.y = player.rect[0] - self.center_x, player.rect[1] - self.center_y
+		self.offset.x, self.offset.y = player.rect.centerx - self.center_x, player.rect.centery - self.center_y
 
-		for entity in self.entity_list:
-			entity.update(self.delta_time, pos=entity.pos - self.offset) # Pass in optional position argument to entity.
+		for entity in sorted(self.entity_list, key = lambda entity: entity.rect.centery):
+			if hasattr(entity, "player"):
+				entity.update(self.delta_time)
+			else:
+				self.parent.surface.blit(entity.image, center(entity.rect.center - self.offset, entity.image)) # Pass in optional position argument to entity.
