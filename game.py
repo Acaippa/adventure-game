@@ -7,7 +7,7 @@ class Game:
 	def __init__(self):
 		self.display_surface = pygame.display.get_surface()
 
-		self.surface = pygame.Surface((self.display_surface.get_width() // PPP, self.display_surface.get_height() // PPP))
+		self.surface = self.create_surface()
 
 		self.delta_time = 0
 
@@ -30,3 +30,6 @@ class Game:
 
 	def draw(self):
 		self.display_surface.blit(pygame.transform.scale(self.surface, self.display_surface.get_size()), (0, 0))
+
+	def create_surface(self):
+		return pygame.Surface((self.display_surface.get_width() // PPP, self.display_surface.get_height() // PPP))

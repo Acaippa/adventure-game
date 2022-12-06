@@ -1,6 +1,8 @@
 import pygame
 from modules.levels.map_loader import *
 from shortcuts import *
+import math
+from modules.settings import *
 
 class Level:
 	def __init__(self, parent):
@@ -39,7 +41,8 @@ class Level:
 		["1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1"]
 		]
 
-		self.map_loader.load_map(self.map)
+		# self.map_loader.load_map(self.map)
+		self.map_loader.load_csv("map/map..csv")
 
 	def update(self, dt):
 		self.delta_time = dt
@@ -77,12 +80,10 @@ class Camera:
 		self.offset.x, self.offset.y = player.rect.centerx - self.center_x, player.rect.centery - self.center_y
 
 		for entity in sorted(self.entity_list, key = lambda entity: entity.rect.centery):
-			if hasattr(entity, "player"):
-				entity.update(self.delta_time)
-				continue
-
-			if hasattr(entity, "obsticle") and entity not in self.obsticle_list: # ! hardware intensive
-				self.obsticle_list.append(entity)
+			if math.hypot(self.parent.player.rect[0] - entity.rect[0], self.parent.player.rect[1] - entity.rect[1]) < 100:
+				if hasattr(entity, "player"):
+					entity.update(self.delta_time)
+					continue
 
 			# pygame.draw.rect(self.display_surface, (255, 255, 255), pygame.Rect(entity.rect.x - self.offset[0], entity.rect.y - self.offset[1], entity.rect.width, entity.rect.height)) draw rect
 			# self.parent.surface.blit(entity.image, center_bottom(entity.rect.center - self.offset, entity.image)) # Pass in optional position argument to entity.

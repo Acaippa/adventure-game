@@ -28,7 +28,7 @@ class Entity:
 		pass
 
 class Player(Entity):
-	def __init__(self, parent):
+	def __init__(self, parent, start_pos=None):
 		super().__init__(parent)
 
 		self.player = None
@@ -46,6 +46,8 @@ class Player(Entity):
 		self.rect = self.image.get_rect()
 
 		self.rect = self.rect.inflate((-10, -10))
+
+		self.rect.center = start_pos
 
 		self.direction = [0, 0]
 
@@ -77,16 +79,16 @@ class Player(Entity):
 
 
 	def move_forwards(self):
-		self.direction[1] = -1
+		self.direction[1] = -10
 
 	def move_backwards(self):
-		self.direction[1] = 1
+		self.direction[1] = 10
 
 	def move_right(self):
-		self.direction[0] = 1
+		self.direction[0] = 10
 
 	def move_left(self):
-		self.direction[0] = -1
+		self.direction[0] = -10
 
 	def handle_collision(self, direction):
 		if direction == "x":
@@ -108,6 +110,10 @@ class Player(Entity):
 class Tree(Entity):
 	def __init__(self, parent, pos):
 		super().__init__(parent)
+
+		self.parent = parent
+
+		self.parent.obsticle_list.append(self)
 
 		self.image = pygame.image.load(f"images/environment/tree0{random.randint(1, 3)}.png").convert_alpha()
 
