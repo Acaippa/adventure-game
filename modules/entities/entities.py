@@ -51,6 +51,8 @@ class Player(Entity):
 
 		self.direction = [0, 0]
 
+		self.speed = 70
+
 	def on_update(self):
 		self.handle_input()
 
@@ -64,7 +66,7 @@ class Player(Entity):
 
 		movement = {pygame.K_UP : self.move_forwards, pygame.K_DOWN : self.move_backwards, pygame.K_RIGHT : self.move_right, pygame.K_LEFT : self.move_left}
 
-		self.direction = [0, 0]
+		self.direction = pygame.math.Vector2(0, 0)
 
 		for key in movement:
 			if input[key]:
@@ -72,23 +74,23 @@ class Player(Entity):
 
 
 		# Split movement into two steps making it possible to handle collision in only one direction at a time.
-		self.rect.x += self.direction[0]
+		self.rect.x += round(self.direction[0])
 		self.handle_collision("x")
-		self.rect.y += self.direction[1]
+		self.rect.y += round(self.direction[1])
 		self.handle_collision("y")
 
 
 	def move_forwards(self):
-		self.direction[1] = -10
+		self.direction[1] = -self.speed * self.delta_time
 
 	def move_backwards(self):
-		self.direction[1] = 10
+		self.direction[1] = self.speed * self.delta_time
 
 	def move_right(self):
-		self.direction[0] = 10
+		self.direction[0] = self.speed * self.delta_time
 
 	def move_left(self):
-		self.direction[0] = -10
+		self.direction[0] = -self.speed * self.delta_time
 
 	def handle_collision(self, direction):
 		if direction == "x":
