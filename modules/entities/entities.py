@@ -143,6 +143,7 @@ class EnemySpawner01(Entity):
 
 		self.spawn_time = 5
 
+
 		self.spawn_time_index = 0
 
 	def on_update(self):
