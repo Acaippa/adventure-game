@@ -21,7 +21,7 @@ class Entity:
 	def fallback(self): # Function that does nothing in order to prevent empty entities from crashing the program
 		print(__name__, "Fallback")
 
-	def on_draw(self):
+	def on_draw(self, offset):
 		pass
 
 	def on_update(self):
@@ -131,3 +131,40 @@ class Tree(Entity):
 		self.display_surface.blit(self.image, center_bottom(self.rect.midbottom - offset, self.image))
 
 
+class EnemySpawner01(Entity):
+	def __init__(self, parent, pos):
+		super().__init__(parent)
+
+		self.parent.entity_list.append(self)
+
+		self.pos = pos
+
+		self.rect = pygame.Rect(pos[0], pos[1], 1, 1)
+
+		self.spawn_time = 5
+
+		self.spawn_time_index = 0
+
+	def on_update(self):
+		print(self.spawn_time_index)
+		if self.spawn_time_index < self.spawn_time:
+			self.spawn_time_index += 1 * self.delta_time
+		else:
+			print("spawning") # Spawn enemy here
+			self.spawn_time_index = 0
+
+class EnemySpawner02(Entity):
+	def __init__(self, parent, pos):
+		super().__init__(parent)
+
+		self.pos = pos
+
+		self.rect = pygame.Rect(1, 1, pos[0], pos[1])
+
+class EnemySpawner03(Entity):
+	def __init__(self, parent, pos):
+		super().__init__(parent)
+
+		self.pos = pos
+
+		self.rect = pygame.Rect(1, 1, pos[0], pos[1])

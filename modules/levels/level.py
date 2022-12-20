@@ -26,21 +26,6 @@ class Level:
 
 		self.map_loader = MapLoader(self)
 
-		self.map = [
-		["1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1"],
-		["1","1","0","0","0","0","0","0","0","0","0","0","0","0","0","1","1","1"],
-		["1","0","1","0","0","0","0","0","0","0","0","0","0","0","0","1","0","1"],
-		["1","0","0","1","0","0","0","0","0","0","0","0","0","p","0","1","0","1"],
-		["1","0","0","0","1","0","0","0","0","0","0","0","0","0","0","1","0","1"],
-		["1","0","0","0","0","0","0","0","0","0","0","0","0","0","0","1","0","1"],
-		["1","0","0","1","0","0","0","0","0","0","0","0","0","0","0","1","0","1"],
-		["1","0","0","0","1","1","1","1","1","1","1","1","1","0","0","0","0","1"],
-		["1","0","0","1","1","0","0","0","0","0","0","0","1","0","0","0","0","1"],
-		["1","0","0","1","0","0","0","0","0","0","0","0","1","0","0","0","0","1"],
-		["1","0","0","1","0","0","0","0","0","0","0","0","1","0","0","0","1","1"],
-		["1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1","1"]
-		]
-
 		# self.map_loader.load_map(self.map)
 		self.map_loader.load_csv("map/map..csv")
 
@@ -81,9 +66,7 @@ class Camera:
 
 		for entity in sorted(self.entity_list, key = lambda entity: entity.rect.centery):
 			if math.hypot(self.parent.player.rect[0] - entity.rect[0], self.parent.player.rect[1] - entity.rect[1]) < 100:
-				if hasattr(entity, "player"):
-					entity.update(self.delta_time)
-					continue
+				entity.update(self.delta_time)
 
 			# pygame.draw.rect(self.display_surface, (255, 255, 255), pygame.Rect(entity.rect.x - self.offset[0], entity.rect.y - self.offset[1], entity.rect.width, entity.rect.height)) draw rect
 			# self.parent.surface.blit(entity.image, center_bottom(entity.rect.center - self.offset, entity.image)) # Pass in optional position argument to entity.

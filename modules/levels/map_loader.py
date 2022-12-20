@@ -3,7 +3,7 @@ from modules.entities.entities import*
 class MapLoader:
 	def __init__(self, level):
 		self.level = level
-		self.entity_list = {"p" : Player, "0" : Tree, "-1" : Entity}
+		self.entity_list = {"p" : Player, "0" : Tree, "-1" : Entity, "1" : EnemySpawner01, "2" : EnemySpawner02, "3" : EnemySpawner03}
 
 	def load_map(self, map): # Loops through any two-dimentional python list and initiate the different entities.
 		for y in range(len(map)):
