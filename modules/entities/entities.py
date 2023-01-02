@@ -1,6 +1,7 @@
 import pygame
 from shortcuts import *
 import random
+import math
 
 class Entity:
 	def __init__(self, parent):
@@ -12,6 +13,8 @@ class Entity:
 
 	def update(self, dt):
 		self.delta_time = dt
+
+		self.player = self.parent.player
 
 		self.on_update()
 
@@ -26,6 +29,9 @@ class Entity:
 
 	def on_update(self):
 		pass
+
+	def get_distance_to_entity(self, entity1, entity2):
+		return math.hypot(entity1.rect[1] - entity2.rect[1], entity1.rect[0] - entity2.rect[0])
 
 class Player(Entity):
 	def __init__(self, parent, start_pos=None):
@@ -137,17 +143,17 @@ class EnemySpawner01(Entity):
 
 		self.parent.entity_list.append(self)
 
+		self.player = self.parent.player
+
 		self.pos = pos
 
 		self.rect = pygame.Rect(pos[0], pos[1], 1, 1)
 
 		self.spawn_time = 5
 
-
 		self.spawn_time_index = 0
 
 	def on_update(self):
-		print(self.spawn_time_index)
 		if self.spawn_time_index < self.spawn_time:
 			self.spawn_time_index += 1 * self.delta_time
 		else:
@@ -169,3 +175,41 @@ class EnemySpawner03(Entity):
 		self.pos = pos
 
 		self.rect = pygame.Rect(1, 1, pos[0], pos[1])
+
+class Enemy(Entity):
+	def __init__(self, parent, pos):
+		super().__init__(parent)
+
+		self.pos = pos
+
+		self.player = self.parent.player
+
+		self.view_range = 100
+
+		self.direction = [0, 0]
+
+		self.speed = 50
+
+	def on_update(self):
+		if self.get_distance_to_entity(self, self.player) <= self.view_range:
+			self.move_towards_player()
+
+		self.apply_movement()
+
+	def on_draw(self, offset):
+		self.display_surface.blit(self.image, center_bottom(self.rect.midbottom - offset, self.image))
+
+	def move_towards_player(self):
+		self.direction[0] = self.speed * self.delta_time
+
+	def apply_movement(self):
+		self.rect.x += self.direction[0]
+		self.rect.y += self.direction[1]
+
+class Skeleton(Enemy):
+	def __init__(self, parent, pos):
+		super().__init__(parent, pos)
+
+		self.image = pygame.image.load("images/enemies/skeleton01.png").convert_alpha()
+
+		self.rect = self.image.get_rect(center = self.pos)
