@@ -212,7 +212,8 @@ class Enemy(Entity):
 	def move_towards_player(self):
 		self.update_angle_to_player()
 
-		self.direction[0] = self.speed * self.delta_time
+		self.direction[0] = math.cos(self.radians_to_player) * (self.speed * self.delta_time)
+		self.direction[1] = math.sin(self.radians_to_player) * (self.speed * self.delta_time)
 
 	def apply_movement(self):
 		self.proxy_pos_x += self.direction[0]
@@ -224,8 +225,7 @@ class Enemy(Entity):
 		self.handle_collision("y")
 
 	def update_angle_to_player(self):
-		self.angle_to_player = math.degrees(math.atan2(self.rect[0] - self.player.rect[0], self.player.rect[1] - self.rect[1]))
-
+		self.radians_to_player = math.atan2(self.player.rect[1] - self.rect[1], self.player.rect[0] - self.rect[0])
 
 class Skeleton(Enemy):
 	def __init__(self, parent, pos):
@@ -233,4 +233,4 @@ class Skeleton(Enemy):
 
 		self.image = pygame.image.load("images/enemies/skeleton01.png").convert_alpha()
 
-		self.rect = self.image.get_rect(center = self.pos)
+		self.rect = self.image.get_rect(topleft = self.pos)
