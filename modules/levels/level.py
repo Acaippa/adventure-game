@@ -68,6 +68,6 @@ class Camera:
 			if math.hypot(self.parent.player.rect[0] - entity.rect[0], self.parent.player.rect[1] - entity.rect[1]) < 100:
 				entity.update(self.delta_time)
 
-			# pygame.draw.rect(self.display_surface, (255, 255, 255), pygame.Rect(entity.rect.x - self.offset[0], entity.rect.y - self.offset[1], entity.rect.width, entity.rect.height)) draw rect
-			# self.parent.surface.blit(entity.image, center_bottom(entity.rect.center - self.offset, entity.image)) # Pass in optional position argument to entity.
+			if hasattr(entity, "enemy"):
+				entity.update(self.delta_time)
 			entity.draw(self.offset)

@@ -200,9 +200,18 @@ class Enemy(Entity):
 
 		self.obsticle_list = self.parent.obsticle_list
 
-	def on_update(self):
+		self.is_at_wanted_location = True
+
+		self.wanted_position = (0, 0)
+
+		self.enemy = ""
+
+	def on_update(self): # Move randomly if the player is not in range.
 		if self.get_distance_to_entity(self, self.player) <= self.view_range:
 			self.move_towards_player()
+
+		else:
+			self.move_randomly()
 
 		self.apply_movement()
 
@@ -226,6 +235,25 @@ class Enemy(Entity):
 
 	def update_angle_to_player(self):
 		self.radians_to_player = math.atan2(self.player.rect[1] - self.rect[1], self.player.rect[0] - self.rect[0])
+
+	def move_randomly(self): # Pick a random point inside its range and walk to that point.
+		if self.is_at_wanted_location == True:
+			position_is_in_bounds = False
+
+			while position_is_in_bounds == False:
+				self.wanted_position = (random.randint(self.pos[0], self.pos[0] + self.view_range), random.randint(self.pos[1], self.pos[1] + self.view_range))
+				for obsticle in self.obsticle_list:
+					if obsticle.rect.collidepoint(self.wanted_position) == False:
+						position_is_in_bounds = True
+
+			self.is_at_wanted_location = False
+		else:
+			angle_to_wanted_position = math.atan2(self.wanted_position[1] - self.rect[1], self.wanted_position[0] - self.rect[0])
+			self.direction[0] = math.cos(angle_to_wanted_position) * (self.speed * self.delta_time)
+			self.direction[1] = math.sin(angle_to_wanted_position) * (self.speed * self.delta_time)
+			if self.rect.collidepoint(self.wanted_position):
+				self.is_at_wanted_location = True
+
 
 class Skeleton(Enemy):
 	def __init__(self, parent, pos):
