@@ -73,9 +73,12 @@ class Player(Entity):
 
 		self.rect.center = start_pos
 
-		self.direction = [0, 0]
+		self.direction = pygame.math.Vector2()
 
-		self.speed = 70
+		self.proxy_pos_x = intFloat(self.rect[0])
+		self.proxy_pos_y = intFloat(self.rect[1])
+
+		self.speed = 1.5
 
 	def on_update(self):
 		self.handle_input()
@@ -96,11 +99,16 @@ class Player(Entity):
 			if input[key]:
 				movement[key]()
 
+		if self.direction.length_squared() > 0:
+			self.direction.scale_to_length(self.speed)
 
 		# Split movement into two steps making it possible to handle collision in only one direction at a time.
-		self.rect.x += round(self.direction[0])
+		self.proxy_pos_x += self.direction[0]
+		self.proxy_pos_y += self.direction[1]
+
+		self.rect.x = self.proxy_pos_x.get()
 		self.handle_collision("x")
-		self.rect.y += round(self.direction[1])
+		self.rect.y = self.proxy_pos_y.get()
 		self.handle_collision("y")
 
 
@@ -189,12 +197,12 @@ class Enemy(Entity):
 
 		self.view_range = 100
 
-		self.direction = [0, 0]
+		self.direction = pygame.math.Vector2()
 
 		self.proxy_pos_x = intFloat(self.pos[0])
 		self.proxy_pos_y = intFloat(self.pos[1])
 
-		self.speed = 30
+		self.speed = 0.1
 
 		self.angle_to_player = 0
 
@@ -225,6 +233,9 @@ class Enemy(Entity):
 		self.direction[1] = math.sin(self.radians_to_player) * (self.speed * self.delta_time)
 
 	def apply_movement(self):
+		if self.direction.length_squared() > 0:
+			self.direction.scale_to_length(self.speed)
+
 		self.proxy_pos_x += self.direction[0]
 		self.proxy_pos_y += self.direction[1]
 
