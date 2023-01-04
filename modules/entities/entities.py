@@ -2,6 +2,7 @@ import pygame
 from shortcuts import *
 import random
 import math
+from modules.data_types.int_float import*
 
 class Entity:
 	def __init__(self, parent):
@@ -32,6 +33,23 @@ class Entity:
 
 	def get_distance_to_entity(self, entity1, entity2):
 		return math.hypot(entity1.rect[1] - entity2.rect[1], entity1.rect[0] - entity2.rect[0])
+
+	def handle_collision(self, direction):
+		if direction == "x":
+			for obsticle in self.obsticle_list:
+				if self.rect.colliderect(obsticle.rect):
+					if self.direction[0] > 0:
+						self.rect.right = obsticle.rect.left
+					if self.direction[0] < 0:
+						self.rect.left = obsticle.rect.right
+
+		if direction == "y":
+			for obsticle in self.obsticle_list:
+				if self.rect.colliderect(obsticle.rect):
+					if self.direction[1] > 0:
+						self.rect.bottom = obsticle.rect.top
+					if self.direction[1] < 0:
+						self.rect.top = obsticle.rect.bottom
 
 class Player(Entity):
 	def __init__(self, parent, start_pos=None):
@@ -98,23 +116,6 @@ class Player(Entity):
 	def move_left(self):
 		self.direction[0] = -self.speed * self.delta_time
 
-	def handle_collision(self, direction):
-		if direction == "x":
-			for obsticle in self.obsticle_list:
-				if self.rect.colliderect(obsticle.rect):
-					if self.direction[0] > 0:
-						self.rect.right = obsticle.rect.left
-					if self.direction[0] < 0:
-						self.rect.left = obsticle.rect.right
-
-		if direction == "y":
-			for obsticle in self.obsticle_list:
-				if self.rect.colliderect(obsticle.rect):
-					if self.direction[1] > 0:
-						self.rect.bottom = obsticle.rect.top
-					if self.direction[1] < 0:
-						self.rect.top = obsticle.rect.bottom
-
 class Tree(Entity):
 	def __init__(self, parent, pos):
 		super().__init__(parent)
@@ -142,6 +143,8 @@ class EnemySpawner01(Entity):
 		super().__init__(parent)
 
 		self.parent.entity_list.append(self)
+
+		self.obsticle_list = self.parent.obsticle_list
 
 		self.player = self.parent.player
 
@@ -188,7 +191,14 @@ class Enemy(Entity):
 
 		self.direction = [0, 0]
 
-		self.speed = 50
+		self.proxy_pos_x = intFloat(self.pos[0])
+		self.proxy_pos_y = intFloat(self.pos[1])
+
+		self.speed = 30
+
+		self.angle_to_player = 0
+
+		self.obsticle_list = self.parent.obsticle_list
 
 	def on_update(self):
 		if self.get_distance_to_entity(self, self.player) <= self.view_range:
@@ -200,11 +210,22 @@ class Enemy(Entity):
 		self.display_surface.blit(self.image, center_bottom(self.rect.midbottom - offset, self.image))
 
 	def move_towards_player(self):
+		self.update_angle_to_player()
+
 		self.direction[0] = self.speed * self.delta_time
 
 	def apply_movement(self):
-		self.rect.x += self.direction[0]
-		self.rect.y += self.direction[1]
+		self.proxy_pos_x += self.direction[0]
+		self.proxy_pos_y += self.direction[1]
+
+		self.rect.x = self.proxy_pos_x.get()
+		self.handle_collision("x")
+		self.rect.y = self.proxy_pos_y.get()
+		self.handle_collision("y")
+
+	def update_angle_to_player(self):
+		self.angle_to_player = math.degrees(math.atan2(self.rect[0] - self.player.rect[0], self.player.rect[1] - self.rect[1]))
+
 
 class Skeleton(Enemy):
 	def __init__(self, parent, pos):
