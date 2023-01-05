@@ -12,10 +12,17 @@ class Entity:
 
 		self.delta_time = 0
 
+		self.facing = "r"
+
+		self.flipped = False
+
 	def update(self, dt):
 		self.delta_time = dt
 
 		self.player = self.parent.player
+
+		if hasattr(self, "direction") and hasattr(self, "image"):
+			self.flip_image()
 
 		self.on_update()
 
@@ -54,6 +61,22 @@ class Entity:
 					if self.direction[1] < 0:
 						self.rect.top = obsticle.rect.bottom
 						self.proxy_pos_y.return_value = self.rect.topleft[1]
+
+	def flip_image(self):
+		if self.direction[0] < 0:
+			self.facing = "l"
+			
+		elif self.direction[0] > 0:
+			self.facing = "r"
+
+		if self.facing == "r" and self.flipped == True:
+			self.image = pygame.transform.flip(self.image, True, False)
+			self.flipped = False
+
+		if self.facing == "l" and self.flipped == False:
+			self.image = pygame.transform.flip(self.image, True, False)
+			self.flipped = True
+
 
 class Player(Entity):
 	def __init__(self, parent, start_pos=None):
