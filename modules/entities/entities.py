@@ -40,16 +40,20 @@ class Entity:
 				if self.rect.colliderect(obsticle.rect):
 					if self.direction[0] > 0:
 						self.rect.right = obsticle.rect.left
+						self.proxy_pos_x.return_value = self.rect.topleft[0]
 					if self.direction[0] < 0:
-						self.rect.left = obsticle.rect.right
+						self.rect.left.return_value = obsticle.rect.right
+						self.proxy_pos_x = self.rect.topleft[0]
 
 		if direction == "y":
 			for obsticle in self.obsticle_list:
 				if self.rect.colliderect(obsticle.rect):
 					if self.direction[1] > 0:
 						self.rect.bottom = obsticle.rect.top
+						self.proxy_pos_y.return_value = self.rect.topleft[1]
 					if self.direction[1] < 0:
 						self.rect.top = obsticle.rect.bottom
+						self.proxy_pos_y.return_value = self.rect.topleft[1]
 
 class Player(Entity):
 	def __init__(self, parent, start_pos=None):
