@@ -36,6 +36,8 @@ class Text:
 
 		return_pos = {}
 
+		self.parse_image = parse_image
+
 		for index, coord in enumerate(pos): # If the coord is text we have to convert it to an integer position relative to the pygame display surface by referring to the positions Dictionary
 			print(pos)
 			if isinstance(coord, str):
@@ -52,7 +54,7 @@ class Text:
 		return 0
 
 	def parse_bottom(self, index):
-		return self.display_surface.get_size()[1]
+		return self.display_surface.get_size()[1] - self.parse_image.get_height()
 
 	def parse_right(self, index):
 		return self.display_surface.get_size()[0]
