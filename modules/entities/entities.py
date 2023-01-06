@@ -3,7 +3,8 @@ from shortcuts import *
 import random
 import math
 from modules.data_types.int_float import*
-
+from modules.UI.health_bar import*
+ 
 class Entity:
 	def __init__(self, parent):
 		self.parent = parent
@@ -244,6 +245,10 @@ class Enemy(Entity):
 		self.wanted_position = (0, 0)
 
 		self.enemy = ""
+
+		self.health_bar = floatingHealthBar(self.parent, self, image_offset=(15, 0))
+
+		self.health = 50
 
 	def on_update(self): # Move randomly if the player is not in range.
 		if self.get_distance_to_entity(self, self.player) <= self.view_range:

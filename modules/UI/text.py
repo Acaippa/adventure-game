@@ -34,8 +34,6 @@ class Text:
 	def parse_pos(self, pos, parse_image): # Convert position from "center" to the center coordinates for the screen and so on
 		positions = {"center" : self.parse_center, "top" : self.parse_top, "bottom" : self.parse_bottom, "right" : self.parse_right, "left" : self.parse_left}
 
-		self.parse_image = parse_image
-
 		return_pos = {}
 
 		for index, coord in enumerate(pos): # If the coord is text we have to convert it to an integer position relative to the pygame display surface by referring to the positions Dictionary
@@ -54,7 +52,7 @@ class Text:
 		return 0
 
 	def parse_bottom(self, index):
-		return self.display_surface.get_size()[1] - self.parse_image.get_height()
+		return self.display_surface.get_size()[1]
 
 	def parse_right(self, index):
 		return self.display_surface.get_size()[0]
@@ -65,6 +63,7 @@ class Text:
 	def update_text(self):
 		self.rendered_font = self.font.render(self.text, False, self.color)
 		self.rendered_font_dimentions = self.rendered_font.get_size()
+
 
 	def update_pos(self):
 		self.blit_pos = self.pos[0] - self.rendered_font_dimentions[0] / 2, self.pos[1] - self.rendered_font_dimentions[1] / 2

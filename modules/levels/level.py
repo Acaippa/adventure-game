@@ -73,6 +73,7 @@ class Camera:
 			if math.hypot(self.parent.player.rect[0] - entity.rect[0], self.parent.player.rect[1] - entity.rect[1]) < 100:
 				entity.update(self.delta_time)
 
-			if hasattr(entity, "enemy"):
+			if hasattr(entity, "enemy") or hasattr(entity, "is_health_bar"):
 				entity.update(self.delta_time)
+
 			entity.draw(self.offset)
