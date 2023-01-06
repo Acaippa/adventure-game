@@ -16,6 +16,10 @@ class Entity:
 
 		self.flipped = False
 
+		self.health = 100
+
+		self.max_health = 100
+
 	def update(self, dt):
 		self.delta_time = dt
 

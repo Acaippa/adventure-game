@@ -3,6 +3,7 @@ from modules.levels.map_loader import *
 from shortcuts import *
 import math
 from modules.settings import *
+from modules.UI.health_bar import *
 
 class Level:
 	def __init__(self, parent):
@@ -29,12 +30,16 @@ class Level:
 		# self.map_loader.load_map(self.map)
 		self.map_loader.load_csv("map/map..csv")
 
+		self.health_bar = healthBar(self, self.player, pos=("left", "bottom"))
+
 	def update(self, dt):
 		self.delta_time = dt
 
 		self.surface.fill("black")
 
 		self.camera.custom_draw(self.player, self.delta_time)
+
+		self.health_bar.update(self.delta_time)
 
 		self.draw()
 
