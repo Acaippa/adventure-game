@@ -4,6 +4,7 @@ from shortcuts import *
 import math
 from modules.settings import *
 from modules.UI.health_bar import *
+from modules.UI.inventory import *
 
 class Level:
 	def __init__(self, parent):
@@ -30,7 +31,9 @@ class Level:
 		# self.map_loader.load_map(self.map)
 		self.map_loader.load_csv("map/map..csv")
 
-		self.health_bar = healthBar(self, self.player, pos=("left", "bottom"))
+		self.inventory = inventory(self, ("left", "bottom"))
+
+		self.health_bar = healthBar(self, self.player, pos=("left", 158))
 
 	def update(self, dt):
 		self.delta_time = dt
@@ -40,6 +43,8 @@ class Level:
 		self.camera.custom_draw(self.player, self.delta_time)
 
 		self.health_bar.update(self.delta_time)
+
+		self.inventory.update(self.delta_time)
 
 		self.draw()
 

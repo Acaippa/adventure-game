@@ -29,7 +29,7 @@ class healthBar(Text):
 	def update(self, dt):
 		self.delta_time = dt
 
-		self.foreground = pygame.transform.scale(self.foreground, (self.foreground_width / self.entity.max_health * self.entity.health, self.pos[1]))
+		self.foreground = pygame.transform.scale(self.foreground, (self.foreground_width / self.entity.max_health * self.entity.health, self.foreground.get_height()))
 
 		self.draw()
 

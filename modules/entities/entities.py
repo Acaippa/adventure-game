@@ -54,8 +54,8 @@ class Entity:
 						self.rect.right = obsticle.rect.left
 						self.proxy_pos_x.return_value = self.rect.topleft[0]
 					if self.direction[0] < 0:
-						self.rect.left.return_value = obsticle.rect.right
-						self.proxy_pos_x = self.rect.topleft[0]
+						self.rect.left = obsticle.rect.right
+						self.proxy_pos_x.return_value = self.rect.topleft[0]
 
 		if direction == "y":
 			for obsticle in self.obsticle_list:
