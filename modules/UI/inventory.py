@@ -8,8 +8,6 @@ class inventory(Text):
 
 		self.delta_time = 0
 
-		self.spaces = []
-
 		self.background = pygame.image.load("images/UI/inventory/background.png").convert_alpha()
 
 		self.pos = super().parse_pos(pos, self.background)
@@ -41,6 +39,14 @@ class inventory(Text):
 		for slot in self.slots:
 			slot.update(self.delta_time)
 
+	def add_item(self, item):
+		for index, slot in enumerate(self.slots):
+			if index < 4 and slot.item == None:
+				slot.item = item
+				break
+
+	# TODO add remove item
+
 class Slot:
 	def __init__(self, inventory, pos):
 		self.inventory = inventory
@@ -55,6 +61,8 @@ class Slot:
 
 		self.delta_time = 0
 
+		self.item_offset = 5
+
 	def update(self, dt):
 		self.delta_time = dt
 
@@ -62,3 +70,6 @@ class Slot:
 
 	def draw(self):
 		self.display_surface.blit(self.slot, self.pos)
+
+		if self.item != None:
+			self.display_surface.blit(self.item.image, self.pos)
