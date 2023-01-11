@@ -120,7 +120,7 @@ class Player(Entity):
 	def on_draw(self, offset):
 		self.display_surface.blit(self.image, center(self.pos, self.image))
 
-	def handle_input(self): # Handle input AND collision
+	def handle_input(self): # !Handle input AND collision
 		input = pygame.key.get_pressed()
 
 		movement = {pygame.K_UP : self.move_forwards, pygame.K_DOWN : self.move_backwards, pygame.K_RIGHT : self.move_right, pygame.K_LEFT : self.move_left}
