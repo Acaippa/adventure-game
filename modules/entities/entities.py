@@ -4,6 +4,8 @@ import random
 import math
 from modules.data_types.int_float import*
 from modules.UI.health_bar import*
+from modules.animation.animation_handler import*
+import os
  
 class Entity:
 	def __init__(self, parent):
@@ -95,7 +97,7 @@ class Player(Entity):
 
 		self.parent.entity_list.append(self)
 
-		self.image = pygame.image.load("images/player/player_front.png").convert_alpha()
+		self.image = pygame.image.load("images/player/idle/01.png").convert_alpha()
 
 		self.pos = (self.display_surface.get_width() // 2, self.display_surface.get_height() // 2) # Center the player
 
@@ -112,8 +114,14 @@ class Player(Entity):
 
 		self.speed = 1.5
 
+		self.animation_state = "idle"
+
+		self.animation_handler = Animation(self, f"{os.getcwd()}\\images\\player")
+
 	def on_update(self):
 		self.handle_input()
+
+		self.animation_handler.update(self.delta_time)
 
 		self.draw(0)
 
