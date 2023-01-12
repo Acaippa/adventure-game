@@ -28,10 +28,10 @@ class Entity:
 
 		self.player = self.parent.player
 
+		self.on_update()
+		
 		if hasattr(self, "direction") and hasattr(self, "image"):
 			self.flip_image()
-
-		self.on_update()
 
 	def draw(self, offset):
 		self.on_draw(offset)
@@ -76,13 +76,11 @@ class Entity:
 		elif self.direction[0] > 0:
 			self.facing = "r"
 
-		if self.facing == "r" and self.flipped == True:
-			self.image = pygame.transform.flip(self.image, True, False)
-			self.flipped = False
+		if self.facing == "l":
+			self.image_rotated = pygame.transform.flip(self.image, True, False)
 
-		if self.facing == "l" and self.flipped == False:
-			self.image = pygame.transform.flip(self.image, True, False)
-			self.flipped = True
+		if self.facing == "r":
+			self.image_rotated = self.image
 
 
 class Player(Entity):
@@ -99,6 +97,8 @@ class Player(Entity):
 
 		self.image = pygame.image.load("images/player/idle/01.png").convert_alpha()
 
+		self.image_rotated = self.image
+
 		self.pos = (self.display_surface.get_width() // 2, self.display_surface.get_height() // 2) # Center the player
 
 		self.rect = self.image.get_rect()
@@ -114,11 +114,11 @@ class Player(Entity):
 
 		self.speed = 1.5
 
-		self.animation_state = "idle"
-
 		self.animation_handler = Animation(self, f"{os.getcwd()}\\images\\player")
 
 	def on_update(self):
+		self.animation_state = "idle"
+
 		self.handle_input()
 
 		self.animation_handler.update(self.delta_time)
@@ -126,7 +126,7 @@ class Player(Entity):
 		self.draw(0)
 
 	def on_draw(self, offset):
-		self.display_surface.blit(self.image, center(self.pos, self.image))
+		self.display_surface.blit(self.image_rotated, center(self.pos, self.image))
 
 	def handle_input(self): # !Handle input AND collision
 		input = pygame.key.get_pressed()
@@ -137,6 +137,7 @@ class Player(Entity):
 
 		for key in movement:
 			if input[key]:
+				self.animation_state = "walk"
 				movement[key]()
 
 		if self.direction.length_squared() > 0:

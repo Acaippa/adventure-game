@@ -32,6 +32,7 @@ class Animation:
 
         if self.animation_index < len(current_animation_images): # Om self.animation_index er mindre enn mengden bilder i nåværende statie, endre bilde til self.animation_index og incrementer self.animation_index
             self.entity.image = current_animation_images[self.animation_index]
+
             self.proxy_animation_index += self.speed * self.delta_time
             self.animation_index = round(self.proxy_animation_index)
 

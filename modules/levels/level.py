@@ -28,7 +28,6 @@ class Level:
 
 		self.map_loader = MapLoader(self)
 
-		# self.map_loader.load_map(self.map)
 		self.map_loader.load_csv("map/map..csv")
 
 		self.inventory = inventory(self, ("left", "bottom"))
