@@ -208,7 +208,7 @@ class EnemySpawner01(Entity):
 		if self.spawn_time_index < self.spawn_time:
 			self.spawn_time_index += 1 * self.delta_time
 		else:
-			print("spawning") # Spawn enemy here
+			print("spawning") # !Spawn enemy here
 			self.spawn_time_index = 0
 
 class EnemySpawner02(Entity):

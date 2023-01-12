@@ -75,10 +75,13 @@ class Camera:
 		self.offset.x, self.offset.y = player.rect.centerx - self.center_x, player.rect.centery - self.center_y
 
 		for entity in sorted(self.entity_list, key = lambda entity: entity.rect.centery):
-			if math.hypot(self.parent.player.rect[0] - entity.rect[0], self.parent.player.rect[1] - entity.rect[1]) < 100:
+			length_to_entity = math.hypot(self.parent.player.rect[0] - entity.rect[0], self.parent.player.rect[1] - entity.rect[1])
+			#! TODO add view and update range
+			if length_to_entity < 100:
 				entity.update(self.delta_time)
 
 			if hasattr(entity, "enemy") or hasattr(entity, "is_health_bar"):
 				entity.update(self.delta_time)
 
-			entity.draw(self.offset)
+			if length_to_entity < 200:
+				entity.draw(self.offset)

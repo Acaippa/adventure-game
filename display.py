@@ -1,5 +1,6 @@
 import pygame
 from game import Game
+from modules.debug import*
 
 class Display:
 	def __init__(self, dimentions=(1360, 800)):
@@ -25,6 +26,8 @@ class Display:
 			self.game.update(self.delta_time)
 
 			self.real_fps = self.clock.get_fps()
+
+			Debug(self.display_surface, round(self.real_fps))
 
 			self.delta_time = self.clock.tick(self.fps) / 1000
 
