@@ -8,12 +8,12 @@ class Animation:
         self.speed = speed
         self.animation_index = 0
         self.delta_time = 0
+        self.proxy_animation_index = 0
 
         self.images = {}
 
         self.load_images()
 
-        print(self.images)
 
     def update(self, dt):
         self.delta_time = dt
@@ -32,7 +32,9 @@ class Animation:
 
         if self.animation_index < len(current_animation_images): # Om self.animation_index er mindre enn mengden bilder i nåværende statie, endre bilde til self.animation_index og incrementer self.animation_index
             self.entity.image = current_animation_images[self.animation_index]
-            self.animation_index += 1 * self.delta_time
+            self.proxy_animation_index += self.speed * self.delta_time
+            self.animation_index = round(self.proxy_animation_index)
 
         else: # Resett self.animation_index om animasjonen er ferdig
             self.animation_index = 0
+            self.proxy_animation_index = 0
