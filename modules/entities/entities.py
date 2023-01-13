@@ -137,7 +137,6 @@ class Player(Entity):
 
 		for key in movement:
 			if input[key]:
-				self.animation_state = "walk"
 				movement[key]()
 
 		if self.direction.length_squared() > 0:
@@ -154,15 +153,18 @@ class Player(Entity):
 
 
 	def move_forwards(self):
+		self.animation_state = "walk_back"
 		self.direction[1] = -self.speed * self.delta_time
 
 	def move_backwards(self):
 		self.direction[1] = self.speed * self.delta_time
 
 	def move_right(self):
+		self.animation_state = "walk"
 		self.direction[0] = self.speed * self.delta_time
 
 	def move_left(self):
+		self.animation_state = "walk"
 		self.direction[0] = -self.speed * self.delta_time
 
 class Tree(Entity):
