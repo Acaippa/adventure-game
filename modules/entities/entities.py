@@ -137,7 +137,7 @@ class Player(Entity):
 	def handle_input(self): # !Handle input AND collision
 		input = pygame.key.get_pressed()
 
-		movement = {pygame.K_UP : self.move_forwards, pygame.K_DOWN : self.move_backwards, pygame.K_RIGHT : self.move_right, pygame.K_LEFT : self.move_left}
+		movement = {pygame.K_w : self.move_forwards, pygame.K_s : self.move_backwards, pygame.K_d : self.move_right, pygame.K_a : self.move_left}
 
 		self.direction = pygame.math.Vector2(0, 0)
 
