@@ -1,4 +1,5 @@
 import pygame
+import math
 
 def scale_rect(rect, scale, divide=False): # Return a scaled rect
 	new_rect = pygame.Rect(rect) # Create new Rect object to avoid changing the original rect
@@ -22,3 +23,6 @@ def center(p, image): # Center the position to the center of the image by ofsett
 
 def center_bottom(p, image):
 	return (p[0] - image.get_width() / 2, p[1] - image.get_height())
+
+def get_angle(pos1, pos2):
+	return math.atan2(pos2[1] - pos1[1], pos2[0] - pos1[0])

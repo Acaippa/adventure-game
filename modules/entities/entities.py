@@ -6,6 +6,7 @@ from modules.data_types.int_float import*
 from modules.UI.health_bar import*
 from modules.animation.animation_handler import*
 import os
+from modules.settings import*
  
 class Entity:
 	def __init__(self, parent):
@@ -29,9 +30,6 @@ class Entity:
 		self.player = self.parent.player
 
 		self.on_update()
-		
-		if hasattr(self, "direction") and hasattr(self, "image"):
-			self.flip_image()
 
 	def draw(self, offset):
 		self.on_draw(offset)
@@ -116,16 +114,24 @@ class Player(Entity):
 
 		self.animation_handler = Animation(self, f"{os.getcwd()}\\images\\player")
 
+		self.turn_angles = {"-45 0" : self.face_right, "0 45" : self.face_right, "45 135" : self.face_down, "135 180" : self.face_left, "-180 -135" : self.face_left, "-135 -45" : self.face_up}
+
+		self.facing = "r"
+
 	def on_update(self):
 		self.animation_state = "idle"
 
 		self.handle_input()
+
+
+		self.turn_towards_cursor()
 
 		self.animation_handler.update(self.delta_time)
 
 		self.draw(0)
 
 	def on_draw(self, offset):
+		self.image_rotated = pygame.transform.flip(self.image, self.flipped, False)
 		self.display_surface.blit(self.image_rotated, center(self.pos, self.image))
 
 	def handle_input(self): # !Handle input AND collision
@@ -153,19 +159,51 @@ class Player(Entity):
 
 
 	def move_forwards(self):
-		self.animation_state = "walk_back"
 		self.direction[1] = -self.speed * self.delta_time
 
 	def move_backwards(self):
 		self.direction[1] = self.speed * self.delta_time
 
 	def move_right(self):
-		self.animation_state = "walk"
 		self.direction[0] = self.speed * self.delta_time
 
 	def move_left(self):
-		self.animation_state = "walk"
 		self.direction[0] = -self.speed * self.delta_time
+
+	def turn_towards_cursor(self):
+		self.flipped = False
+		angle_to_cursor = math.degrees(get_angle((self.pos[0] * PPP, self.pos[1] * PPP), pygame.mouse.get_pos()))
+		for angle in self.turn_angles:
+			from_, to = int(angle.split(" ")[0]), int(angle.split(" ")[1])
+			if angle_to_cursor > from_ and angle_to_cursor < to:
+				self.turn_angles[angle]()
+
+	# Gjør at Player spiller gå animasjonen i den retningen den peker i når brukeren flytter på den
+
+	def face_right(self):
+		self.facing = "r"
+		self.check_walk_horizontally()
+
+	def face_left(self):
+		self.facing = "l"
+		self.flipped = True
+		self.check_walk_horizontally()
+
+	def face_up(self):
+		self.facing = "u"
+		self.animation_state = "idle_back"
+		self.check_walk_vertically()
+
+	def face_down(self):
+		self.facing = "d"
+
+	def check_walk_horizontally(self):
+		if self.direction[0] != 0 or self.direction[1] != 0:
+			self.animation_state = "walk"
+
+	def check_walk_vertically(self):
+		if self.direction[0] != 0 or self.direction[1] != 0:
+			self.animation_state = "walk_back"
 
 class Tree(Entity):
 	def __init__(self, parent, pos):
@@ -268,10 +306,12 @@ class Enemy(Entity):
 		else:
 			self.move_randomly()
 
+		self.flip_image()
+
 		self.apply_movement()
 
 	def on_draw(self, offset):
-		self.display_surface.blit(self.image, center_bottom(self.rect.midbottom - offset, self.image))
+		self.display_surface.blit(self.image_rotated, center_bottom(self.rect.midbottom - offset, self.image))
 
 	def move_towards_player(self):
 		self.update_angle_to_player()
