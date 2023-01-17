@@ -9,6 +9,7 @@ class Animation:
         self.animation_index = 0
         self.delta_time = 0
         self.proxy_animation_index = 0
+        self.resat = False
 
         self.images = {}
 
@@ -35,7 +36,13 @@ class Animation:
 
             self.proxy_animation_index += self.speed * self.delta_time
             self.animation_index = round(self.proxy_animation_index)
+            self.resat = False
 
         else: # Resett self.animation_index om animasjonen er ferdig
             self.animation_index = 0
             self.proxy_animation_index = 0
+            self.resat = True
+
+    def reset_animation(self):
+        self.animation_index = 0
+        self.proxy_animation_index = 0

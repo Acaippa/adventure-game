@@ -118,13 +118,16 @@ class Player(Entity):
 
 		self.facing = "r"
 
+		self.attacking = False
+
 	def on_update(self):
 		self.animation_state = "idle"
 
 		self.handle_input()
 
-
 		self.turn_towards_cursor()
+
+		self.handle_attack()
 
 		self.animation_handler.update(self.delta_time)
 
@@ -139,11 +142,19 @@ class Player(Entity):
 
 		movement = {pygame.K_w : self.move_forwards, pygame.K_s : self.move_backwards, pygame.K_d : self.move_right, pygame.K_a : self.move_left}
 
+		actions = {
+			pygame.mouse.get_pressed()[0] == True : self.start_attack
+		}
+
 		self.direction = pygame.math.Vector2(0, 0)
 
 		for key in movement:
 			if input[key]:
 				movement[key]()
+
+		for key in actions:
+			if key == True:
+				actions[key]()
 
 		if self.direction.length_squared() > 0:
 			self.direction.scale_to_length(self.speed)
@@ -204,6 +215,18 @@ class Player(Entity):
 	def check_walk_vertically(self):
 		if self.direction[0] != 0 or self.direction[1] != 0:
 			self.animation_state = "walk_back"
+
+	def start_attack(self):
+		if self.attacking == False:
+			self.animation_handler.reset_animation()
+			self.attacking = True
+
+	def handle_attack(self):
+		if self.attacking and self.animation_handler.resat == False:
+			self.animation_state = "attack_right"
+		else:
+			self.attacking = False
+
 
 class Tree(Entity):
 	def __init__(self, parent, pos):
