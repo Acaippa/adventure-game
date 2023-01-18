@@ -223,7 +223,10 @@ class Player(Entity):
 
 	def handle_attack(self):
 		if self.attacking and self.animation_handler.resat == False:
-			self.animation_state = "attack_right"
+			if self.facing == "r" or self.facing == "l":
+				self.animation_state = "attack_right"
+			elif self.facing == "u":
+				self.animation_state = "attack_up"
 		else:
 			self.attacking = False
 
