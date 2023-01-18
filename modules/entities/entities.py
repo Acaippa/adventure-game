@@ -99,7 +99,7 @@ class Player(Entity):
 
 		self.pos = (self.display_surface.get_width() // 2, self.display_surface.get_height() // 2) # Center the player
 
-		self.rect = self.image.get_rect()
+		self.rect = self.image.get_rect(center=self.pos)
 
 		self.rect = self.rect.inflate((-10, -10))
 
@@ -135,7 +135,7 @@ class Player(Entity):
 
 	def on_draw(self, offset):
 		self.image_rotated = pygame.transform.flip(self.image, self.flipped, False)
-		self.display_surface.blit(self.image_rotated, center(self.pos, self.image))
+		self.display_surface.blit(self.image_rotated, center(self.pos, self.image_rotated))
 
 	def handle_input(self): # !Handle input AND collision
 		input = pygame.key.get_pressed()
@@ -337,7 +337,7 @@ class Enemy(Entity):
 		self.apply_movement()
 
 	def on_draw(self, offset):
-		self.display_surface.blit(self.image_rotated, center_bottom(self.rect.midbottom - offset, self.image))
+		self.display_surface.blit(self.image_rotated, center(self.rect.center - offset, self.image))
 
 	def move_towards_player(self):
 		self.update_angle_to_player()
@@ -358,7 +358,7 @@ class Enemy(Entity):
 		self.handle_collision("y")
 
 	def update_angle_to_player(self):
-		self.radians_to_player = math.atan2(self.player.rect[1] - self.rect[1], self.player.rect[0] - self.rect[0])
+		self.radians_to_player = math.atan2(self.player.rect.center[1] - self.rect.center[1], self.player.rect.center[0] - self.rect.center[0])
 
 	def move_randomly(self): # Pick a random point inside its range and walk to that point.
 		if self.is_at_wanted_location == True:
