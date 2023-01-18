@@ -22,9 +22,9 @@ class Level:
 
 		self.obsticle_list = []
 
-		self.camera = Camera(self)
+		self.enemy_list = []
 
-		# TODO: add enemy_list
+		self.camera = Camera(self)
 
 		self.map_loader = MapLoader(self)
 

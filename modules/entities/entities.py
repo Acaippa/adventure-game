@@ -97,6 +97,8 @@ class Player(Entity):
 
 		self.image_rotated = self.image
 
+		self.mask = pygame.mask.from_surface(self.image_rotated)
+
 		self.pos = (self.display_surface.get_width() // 2, self.display_surface.get_height() // 2) # Center the player
 
 		self.rect = self.image.get_rect(center=self.pos)
@@ -120,6 +122,8 @@ class Player(Entity):
 
 		self.attacking = False
 
+		self.attack_offset = 4
+
 	def on_update(self):
 		self.animation_state = "idle"
 
@@ -129,12 +133,15 @@ class Player(Entity):
 
 		self.handle_attack()
 
+		self.check_enemy_collision()
+
 		self.animation_handler.update(self.delta_time)
 
 		self.draw(0)
 
 	def on_draw(self, offset):
 		self.image_rotated = pygame.transform.flip(self.image, self.flipped, False)
+		self.mask = pygame.mask.from_surface(self.image_rotated)
 		self.display_surface.blit(self.image_rotated, center(self.pos, self.image_rotated))
 
 	def handle_input(self): # !Handle input AND collision
@@ -189,8 +196,6 @@ class Player(Entity):
 			if angle_to_cursor > from_ and angle_to_cursor < to:
 				self.turn_angles[angle]()
 
-	# Gjør at Player spiller gå animasjonen i den retningen den peker i når brukeren flytter på den
-
 	def face_right(self):
 		self.facing = "r"
 		self.check_walk_horizontally()
@@ -229,6 +234,12 @@ class Player(Entity):
 				self.animation_state = "attack_up"
 		else:
 			self.attacking = False
+
+	def check_enemy_collision(self):
+		for enemy in self.parent.enemy_list:
+			offset = (enemy.rect.center[0] - self.rect.center[0], enemy.rect.center[1] - self.rect.center[1])
+			overlap = self.mask.overlap(enemy.mask, offset)
+			print(overlap)
 
 
 class Tree(Entity):
@@ -325,6 +336,8 @@ class Enemy(Entity):
 
 		self.health = 50
 
+		self.parent.enemy_list.append(self)
+
 	def on_update(self): # Move randomly if the player is not in range.
 		if self.get_distance_to_entity(self, self.player) <= self.view_range:
 			self.move_towards_player()
@@ -337,6 +350,7 @@ class Enemy(Entity):
 		self.apply_movement()
 
 	def on_draw(self, offset):
+		self.mask = pygame.mask.from_surface(self.image_rotated)
 		self.display_surface.blit(self.image_rotated, center(self.rect.center - offset, self.image))
 
 	def move_towards_player(self):
