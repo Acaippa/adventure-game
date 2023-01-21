@@ -122,6 +122,8 @@ class Player(Entity):
 
 		self.attacking = False
 
+		self.hurting = False
+
 		self.attack_offset = 4
 
 	def on_update(self):
@@ -133,7 +135,8 @@ class Player(Entity):
 
 		self.handle_attack()
 
-		self.check_enemy_collision()
+		if self.attacking and self.animation_handler.animation_index > self.attack_offset:
+			self.check_enemy_collision()
 
 		self.animation_handler.update(self.delta_time)
 
@@ -225,6 +228,7 @@ class Player(Entity):
 		if self.attacking == False:
 			self.animation_handler.reset_animation()
 			self.attacking = True
+			self.hurting = True
 
 	def handle_attack(self):
 		if self.attacking and self.animation_handler.resat == False:
@@ -239,7 +243,13 @@ class Player(Entity):
 		for enemy in self.parent.enemy_list:
 			offset = (enemy.rect.center[0] - self.rect.center[0], enemy.rect.center[1] - self.rect.center[1])
 			overlap = self.mask.overlap(enemy.mask, offset)
-			print(overlap)
+
+			if overlap != None:
+				enemy.hurt(1)
+				self.hurting = False
+
+	def hurt(self, damage):
+		self.health -= damage
 
 
 class Tree(Entity):
@@ -338,14 +348,26 @@ class Enemy(Entity):
 
 		self.parent.enemy_list.append(self)
 
+		self.attack_delay = 2
+
+		self.attack_delay_index = 0
+
+		self.attacking = False
+
+		self.hurting = False
+
+		self.mask = pygame.Mask((20, 20))
+
 	def on_update(self): # Move randomly if the player is not in range.
 		if self.get_distance_to_entity(self, self.player) <= self.view_range:
 			self.move_towards_player()
+			self.update_attack()
 
 		else:
 			self.move_randomly()
 
 		self.flip_image()
+
 
 		self.apply_movement()
 
@@ -392,6 +414,30 @@ class Enemy(Entity):
 			if self.rect.collidepoint(self.wanted_position):
 				self.is_at_wanted_location = True
 
+	def hurt(self, damage):
+		self.health -= damage
+
+	def start_attack(self):
+		self.attacking = True
+		self.attack_delay_index = 0
+		self.hurting = True
+		# ! add animation
+
+	def update_attack(self):
+		if self.attack_delay_index < self.attack_delay:
+			self.attack_delay_index += 1 * self.delta_time
+			self.attacking = False
+			self.hurting = False
+		else:
+			self.start_attack()
+
+		offset = (self.player.rect.center[0] - self.rect.center[0], self.player.rect.center[1] - self.rect.center[1])
+		overlap = self.mask.overlap(self.player.mask, offset)
+
+		if self.attacking and overlap != None and self.hurting:
+			self.player.hurt(50)
+			self.attack_delay_index = 0
+			self.hurting = False
 
 class Skeleton(Enemy):
 	def __init__(self, parent, pos):
