@@ -5,7 +5,7 @@ class Animation:
     def __init__(self, entity, animation_path, speed=10): # Vent 10 frames før vi bytter til neste bilde
         self.entity = entity
         self.animation_path = animation_path
-        self.speed = speed
+        self.default_speed = speed
         self.animation_index = 0
         self.delta_time = 0
         self.proxy_animation_index = 0
@@ -13,8 +13,9 @@ class Animation:
 
         self.images = {}
 
-        self.load_images()
+        self.config = {}
 
+        self.load_images()
 
     def update(self, dt):
         self.delta_time = dt
@@ -24,17 +25,28 @@ class Animation:
     def load_images(self): # Loop gjennom mappen der animasjonsstadiene ligger og lagre stadiet som nøkkelen til self.images og bildene som verdien til sistnevnte #! TODO: Cleanup 
         for state in os.listdir(self.animation_path):
             if state[-1] != "_":
-                self.images[state] = [pygame.image.load(f"{self.animation_path}\\{state}\\{image}") for image in os.listdir(f"{self.animation_path}\\{state}")] # "idle_animation" : [01.png, 02.png, 03.png]
+                state_path = os.path.join(self.animation_path, state)
+                self.images[state] = [pygame.image.load(os.path.join(self.animation_path, state, image)) for image in os.listdir(state_path)] # "idle_animation" : [01.png, 02.png, 03.png]
+                
+                config_path = os.path.join(state_path, "config.ra")
+
+                if os.path.exists(config_path):
+                    with open(config_path, "r") as file:
+                        for line in file.readlines():
+                            key, value = line.split(":")
+                            self.config[state] = {key, value}
 
     def animate_entity(self):
         current_animation_state = self.entity.animation_state
 
         current_animation_images = self.images[current_animation_state]
 
+        speed = self.default_speed
+
         if self.animation_index < len(current_animation_images): # Om self.animation_index er mindre enn mengden bilder i nåværende statie, endre bilde til self.animation_index og incrementer self.animation_index
             self.entity.image = current_animation_images[self.animation_index]
 
-            self.proxy_animation_index += self.speed * self.delta_time
+            self.proxy_animation_index += speed * self.delta_time
             self.animation_index = round(self.proxy_animation_index)
             self.resat = False
 
@@ -46,3 +58,6 @@ class Animation:
     def reset_animation(self):
         self.animation_index = 0
         self.proxy_animation_index = 0
+
+    def parse_config(self):
+        config_path = os.path.join(self.animation_path, )
