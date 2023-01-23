@@ -358,6 +358,14 @@ class Enemy(Entity):
 
 		self.mask = pygame.Mask((20, 20))
 
+		self.animation_handler = Animation(self, f"{os.getcwd()}\\images\\enemies\\skeleton")
+
+		self.image_rotated = self.image
+
+		self.rect = self.image.get_rect(topleft = self.pos)
+
+		self.animation_state = "walk_right"
+
 	def on_update(self): # Move randomly if the player is not in range.
 		if self.get_distance_to_entity(self, self.player) <= self.view_range:
 			self.move_towards_player()
@@ -368,6 +376,7 @@ class Enemy(Entity):
 
 		self.flip_image()
 
+		self.animation_handler.update(self.delta_time)
 
 		self.apply_movement()
 
@@ -441,11 +450,9 @@ class Enemy(Entity):
 
 class Skeleton(Enemy):
 	def __init__(self, parent, pos):
-		super().__init__(parent, pos)
-
 		self.image = pygame.image.load("images/enemies/skeleton01.png").convert_alpha()
 
-		self.rect = self.image.get_rect(topleft = self.pos)
+		super().__init__(parent, pos)
 
 class Item(Entity):
 	def __init__(self, parent, pos):
