@@ -24,6 +24,8 @@ class Entity:
 
 		self.max_health = 100
 
+		self.animation_config = {}
+
 	def update(self, dt):
 		self.delta_time = dt
 
@@ -453,6 +455,8 @@ class Skeleton(Enemy):
 		self.image = pygame.image.load("images/enemies/skeleton01.png").convert_alpha()
 
 		super().__init__(parent, pos)
+
+		self.animation_config["walk_right"] = {"speed" : 2}
 
 class Item(Entity):
 	def __init__(self, parent, pos):
