@@ -5,6 +5,7 @@ import math
 from modules.settings import *
 from modules.UI.health_bar import *
 from modules.UI.inventory import *
+from modules.entities.ent_image import*
 
 class Level:
 	def __init__(self, parent):
@@ -33,6 +34,8 @@ class Level:
 		self.inventory = inventory(self, ("left", "bottom"))
 
 		self.health_bar = healthBar(self, self.player, pos=("left", 158))
+
+		self.background_image = Image(self, (0, 0), "images/map_new.png")
 
 	def update(self, dt):
 		self.delta_time = dt
@@ -72,6 +75,8 @@ class Camera:
 		self.delta_time = dt
 
 		self.offset.x, self.offset.y = player.rect.centerx - self.center_x, player.rect.centery - self.center_y
+
+		self.parent.background_image.draw(self.offset)
 
 		for entity in sorted(self.entity_list, key = lambda entity: entity.rect.centery):
 			length_to_entity = math.hypot(self.parent.player.rect[0] - entity.rect[0], self.parent.player.rect[1] - entity.rect[1])

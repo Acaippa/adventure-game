@@ -456,7 +456,7 @@ class Skeleton(Enemy):
 
 		super().__init__(parent, pos)
 
-		self.animation_config["walk_right"] = {"speed" : 2}
+		self.animation_config["walk_right"] = {"speed" : 3}
 
 class Item(Entity):
 	def __init__(self, parent, pos):
