@@ -264,7 +264,9 @@ class Tree(Entity):
 
 		self.image = pygame.image.load(f"images/environment/tree0{random.randint(1, 3)}.png").convert_alpha()
 
-		self.pos = pos
+		self.random_offset = 10
+
+		self.pos = pos[0] + round(random.randrange(-self.random_offset, self.random_offset)), pos[1] + round(random.randrange(-self.random_offset, self.random_offset))
 
 		self.rect = self.image.get_rect(center=self.pos)
 
