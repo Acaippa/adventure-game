@@ -36,6 +36,14 @@ class Entity:
 	def draw(self, offset):
 		self.on_draw(offset)
 
+	def die(self, skip=False):
+		if not skip:
+			if self in self.parent.entity_list:
+				self.parent.entity_list.remove(self)
+			self.on_die()
+		else:
+			self.on_die()
+
 	def fallback(self): # Function that does nothing in order to prevent empty entities from crashing the program
 		print(__name__, "Fallback")
 
@@ -44,6 +52,22 @@ class Entity:
 
 	def on_update(self):
 		pass
+
+	def on_die(self):
+		pass
+
+	def on_hurt(self, damage):
+		pass
+
+	def hurt(self, damage, skip=False): # If skip go straight to on_hurt
+		if not skip:
+			if self.health - damage < 0:
+				self.die()
+			else:
+				self.health -= damage
+			self.on_hurt(damage)
+		else:
+			self.on_hurt(damage)
 
 	def get_distance_to_entity(self, entity1, entity2):
 		return math.hypot(entity1.rect[1] - entity2.rect[1], entity1.rect[0] - entity2.rect[0])
@@ -81,6 +105,7 @@ class Entity:
 
 		if self.facing == "r":
 			self.image_rotated = self.image
+
 
 
 class Player(Entity):
@@ -247,11 +272,8 @@ class Player(Entity):
 			overlap = self.mask.overlap(enemy.mask, offset)
 
 			if overlap != None:
-				enemy.hurt(1)
+				enemy.hurt(100)
 				self.hurting = False
-
-	def hurt(self, damage):
-		self.health -= damage
 
 
 class Tree(Entity):
@@ -370,6 +392,8 @@ class Enemy(Entity):
 
 		self.animation_state = "walk_right"
 
+		self.parent_entity_list = self.parent.entity_list
+
 	def on_update(self): # Move randomly if the player is not in range.
 		if self.get_distance_to_entity(self, self.player) <= self.view_range:
 			self.move_towards_player()
@@ -393,6 +417,9 @@ class Enemy(Entity):
 
 		self.direction[0] = math.cos(self.radians_to_player) * (self.speed * self.delta_time)
 		self.direction[1] = math.sin(self.radians_to_player) * (self.speed * self.delta_time)
+
+	def on_die(self):
+		self.health_bar.die()
 
 	def apply_movement(self):
 		if self.direction.length_squared() > 0:
@@ -426,9 +453,6 @@ class Enemy(Entity):
 			self.direction[1] = math.sin(angle_to_wanted_position) * (self.speed * self.delta_time)
 			if self.rect.collidepoint(self.wanted_position):
 				self.is_at_wanted_location = True
-
-	def hurt(self, damage):
-		self.health -= damage
 
 	def start_attack(self):
 		self.attacking = True

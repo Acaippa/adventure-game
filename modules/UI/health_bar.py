@@ -67,8 +67,12 @@ class floatingHealthBar:
 
 		self.rect = self.background.get_rect(topleft = self.entity.pos)
 
-		self.foreground = pygame.transform.scale(self.foreground, (self.foreground_width / self.entity.max_health * self.entity.health, self.foreground.get_height()))
+		self.foreground = pygame.transform.scale(self.foreground, (self.foreground_width / self.entity.max_health * self.entity.health, self.foreground.get_height())) if self.entity.health > 0 else self.foreground
 
 	def draw(self, offset):
 		self.display_surface.blit(self.background, ((self.entity.rect[0], self.entity.rect[1]) - offset) + self.image_offset)
 		self.display_surface.blit(self.foreground, ((self.entity.rect[0], self.entity.rect[1]) - offset) + self.image_offset)
+
+	def die(self):
+		if self in self.entity.parent.entity_list:
+			self.entity.parent.entity_list.remove(self)
