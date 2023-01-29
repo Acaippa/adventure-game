@@ -26,6 +26,12 @@ class Entity:
 
 		self.animation_config = {}
 
+		self.shake_duration = .1
+
+		self.shake_duration_index = 0
+
+		self.shaking = False
+
 	def update(self, dt):
 		self.delta_time = dt
 
@@ -73,7 +79,7 @@ class Entity:
 		return math.hypot(entity1.rect[1] - entity2.rect[1], entity1.rect[0] - entity2.rect[0])
 
 	def handle_collision(self, direction):
-		if len(self.parent.obsticle_list) != 0:
+		if len(self.parent.obsticle_list) != 0: # Bare sjekk kollisjon om det er obsticles å sjekke kollisjon imot
 			if direction == "x":
 				for obsticle in self.parent.obsticle_list:
 					if self.rect.colliderect(obsticle.rect):
@@ -155,7 +161,7 @@ class Player(Entity):
 
 		self.hurting = False
 
-		self.attack_offset = 4
+		self.attack_offset = 5
 
 	def on_update(self):
 		self.animation_state = "idle"
@@ -166,7 +172,7 @@ class Player(Entity):
 
 		self.handle_attack()
 
-		if self.attacking and self.animation_handler.animation_index > self.attack_offset:
+		if self.attacking and self.animation_handler.animation_index == self.attack_offset:
 			self.check_enemy_collision()
 
 		self.animation_handler.update(self.delta_time)
@@ -246,6 +252,8 @@ class Player(Entity):
 
 	def face_down(self):
 		self.facing = "d"
+		self.animation_state = "idle_down"
+		self.check_walk_vertically()
 
 	def check_walk_horizontally(self):
 		if self.direction[0] != 0 or self.direction[1] != 0:
@@ -253,7 +261,12 @@ class Player(Entity):
 
 	def check_walk_vertically(self):
 		if self.direction[0] != 0 or self.direction[1] != 0:
-			self.animation_state = "walk_back"
+			if self.facing == "u":
+				self.animation_state = "walk_back"
+			elif self.facing == "d":
+				self.animation_state = "walk_down"
+
+
 
 	def start_attack(self):
 		if self.attacking == False:
@@ -267,6 +280,8 @@ class Player(Entity):
 				self.animation_state = "attack_right"
 			elif self.facing == "u":
 				self.animation_state = "attack_up"
+			elif self.facing == "d":
+				self.animation_state = "attack_down"
 		else:
 			self.attacking = False
 
@@ -276,7 +291,7 @@ class Player(Entity):
 			overlap = self.mask.overlap(enemy.mask, offset)
 
 			if overlap != None:
-				enemy.hurt(100)
+				enemy.hurt(1)
 				self.hurting = False
 
 
@@ -353,6 +368,8 @@ class Enemy(Entity):
 
 		self.view_range = 100
 
+		self.attack_range = 20
+
 		self.direction = pygame.math.Vector2()
 
 		self.proxy_pos_x = intFloat(self.pos[0])
@@ -374,7 +391,7 @@ class Enemy(Entity):
 
 		self.parent.enemy_list.append(self)
 
-		self.attack_delay = 2
+		self.attack_delay = 2.5
 
 		self.attack_delay_index = 0
 
@@ -395,9 +412,14 @@ class Enemy(Entity):
 		self.parent_entity_list = self.parent.entity_list
 
 	def on_update(self): # Move randomly if the player is not in range.
+		self.animation_state = "walk_right"
+
 		if self.get_distance_to_entity(self, self.player) <= self.view_range:
 			self.move_towards_player()
-			self.update_attack()
+			if self.get_distance_to_entity(self, self.player) <= self.attack_range:
+				self.update_attack()
+			elif self.attacking != False:
+				self.attack_delay_index = self.attack_delay
 
 		else:
 			self.move_randomly()
@@ -409,8 +431,16 @@ class Enemy(Entity):
 		self.apply_movement()
 
 	def on_draw(self, offset):
+		if self.shaking and self.shake_duration_index < self.shake_duration:
+			shaking_offset = (random.randrange(-2, 2), random.randrange(-2, 2))
+			self.shake_duration_index += 1 * self.delta_time
+		else:
+			self.shake_duration_index = 0
+			self.shaking = False
+			shaking_offset = (0, 0)
+
 		self.mask = pygame.mask.from_surface(self.image_rotated)
-		self.display_surface.blit(self.image_rotated, center(self.rect.center - offset, self.image))
+		self.display_surface.blit(self.image_rotated, center(self.rect.center - offset - shaking_offset, self.image))
 
 	def move_towards_player(self):
 		self.update_angle_to_player()
@@ -450,25 +480,32 @@ class Enemy(Entity):
 
 	def start_attack(self):
 		self.attacking = True
-		self.attack_delay_index = 0
 		self.hurting = True
-		# ! add animation
+		self.attack_delay_index = 0
+		self.animation_handler.reset_animation()
 
 	def update_attack(self):
 		if self.attack_delay_index < self.attack_delay:
 			self.attack_delay_index += 1 * self.delta_time
-			self.attacking = False
-			self.hurting = False
 		else:
 			self.start_attack()
 
 		offset = (self.player.rect.center[0] - self.rect.center[0], self.player.rect.center[1] - self.rect.center[1])
 		overlap = self.mask.overlap(self.player.mask, offset)
 
-		if self.attacking and overlap != None and self.hurting:
-			self.player.hurt(50)
-			self.attack_delay_index = 0
+		if self.attacking and overlap != None and self.hurting: # Stopp å skade spilleren om fienden treffer den 1 gang
+			self.player.hurt(1)
 			self.hurting = False
+
+		if self.animation_handler.resat: # Stopp attack
+			self.attacking = False
+			self.hurting = False
+
+		if self.attacking: # Gjør at fienden spiller angrip animasjonen
+			self.animation_state = "attack_right"
+
+	def on_hurt(self, damage):
+		self.shaking = True
 
 class Skeleton(Enemy):
 	def __init__(self, parent, pos):
