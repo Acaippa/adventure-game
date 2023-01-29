@@ -73,25 +73,31 @@ class Entity:
 		return math.hypot(entity1.rect[1] - entity2.rect[1], entity1.rect[0] - entity2.rect[0])
 
 	def handle_collision(self, direction):
-		if direction == "x":
-			for obsticle in self.obsticle_list:
-				if self.rect.colliderect(obsticle.rect):
-					if self.direction[0] > 0:
-						self.rect.right = obsticle.rect.left
-						self.proxy_pos_x.return_value = self.rect.topleft[0]
-					if self.direction[0] < 0:
-						self.rect.left = obsticle.rect.right
-						self.proxy_pos_x.return_value = self.rect.topleft[0]
+		if len(self.parent.obsticle_list) != 0:
+			if direction == "x":
+				for obsticle in self.parent.obsticle_list:
+					if self.rect.colliderect(obsticle.rect):
+						if hasattr(self, "is_at_wanted_location"):
+							self.is_at_wanted_location = True
 
-		if direction == "y":
-			for obsticle in self.obsticle_list:
-				if self.rect.colliderect(obsticle.rect):
-					if self.direction[1] > 0:
-						self.rect.bottom = obsticle.rect.top
-						self.proxy_pos_y.return_value = self.rect.topleft[1]
-					if self.direction[1] < 0:
-						self.rect.top = obsticle.rect.bottom
-						self.proxy_pos_y.return_value = self.rect.topleft[1]
+						if self.direction[0] > 0:
+							self.rect.right = obsticle.rect.left
+							self.proxy_pos_x.return_value = self.rect.topleft[0]
+						if self.direction[0] < 0:
+							self.rect.left = obsticle.rect.right
+							self.proxy_pos_x.return_value = self.rect.topleft[0]
+
+			if direction == "y":
+				for obsticle in self.parent.obsticle_list:
+					if self.rect.colliderect(obsticle.rect):
+						if hasattr(self, "is_at_wanted_location"):
+							self.is_at_wanted_location = True
+						if self.direction[1] > 0:
+							self.rect.bottom = obsticle.rect.top
+							self.proxy_pos_y.return_value = self.rect.topleft[1]
+						if self.direction[1] < 0:
+							self.rect.top = obsticle.rect.bottom
+							self.proxy_pos_y.return_value = self.rect.topleft[1]
 
 	def flip_image(self):
 		if self.direction[0] < 0:
@@ -115,8 +121,6 @@ class Player(Entity):
 		self.player = None
 
 		self.parent = parent
-
-		self.obsticle_list = self.parent.obsticle_list
 
 		self.parent.entity_list.append(self)
 
@@ -306,8 +310,6 @@ class EnemySpawner01(Entity):
 
 		self.parent.entity_list.append(self)
 
-		self.obsticle_list = self.parent.obsticle_list
-
 		self.player = self.parent.player
 
 		self.pos = pos
@@ -359,8 +361,6 @@ class Enemy(Entity):
 		self.speed = 0.1
 
 		self.angle_to_player = 0
-
-		self.obsticle_list = self.parent.obsticle_list
 
 		self.is_at_wanted_location = True
 
@@ -438,14 +438,8 @@ class Enemy(Entity):
 
 	def move_randomly(self): # Pick a random point inside its range and walk to that point.
 		if self.is_at_wanted_location == True:
-			position_is_in_bounds = False
-
-			while position_is_in_bounds == False:
-				self.wanted_position = (random.randint(self.pos[0], self.pos[0] + self.view_range), random.randint(self.pos[1], self.pos[1] + self.view_range))
-				for obsticle in self.obsticle_list:
-					if obsticle.rect.collidepoint(self.wanted_position) == False:
-						position_is_in_bounds = True
-
+			#! TODO: Add - self.view_range
+			self.wanted_position = (random.randint(self.pos[0], self.pos[0] + self.view_range), random.randint(self.pos[1], self.pos[1] + self.view_range))
 			self.is_at_wanted_location = False
 		else:
 			angle_to_wanted_position = math.atan2(self.wanted_position[1] - self.rect[1], self.wanted_position[0] - self.rect[0])

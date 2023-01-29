@@ -78,14 +78,20 @@ class Camera:
 
 		self.parent.background_image.draw(self.offset)
 
+		temp_obsticle_list = []
+
 		for entity in sorted(self.entity_list, key = lambda entity: entity.rect.centery):
 			length_to_entity = math.hypot(self.parent.player.rect[0] - entity.rect[0], self.parent.player.rect[1] - entity.rect[1])
 			#! TODO add view and update range
 			if length_to_entity < 100:
 				entity.update(self.delta_time)
+				if hasattr(entity, "obsticle"):
+					temp_obsticle_list.append(entity)
 
 			if hasattr(entity, "enemy") or hasattr(entity, "is_health_bar"):
 				entity.update(self.delta_time)
 
 			if length_to_entity < 200:
 				entity.draw(self.offset)
+
+		self.parent.obsticle_list = temp_obsticle_list
