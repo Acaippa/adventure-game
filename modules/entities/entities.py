@@ -415,7 +415,9 @@ class Enemy(Entity):
 
 		self.sliding_velocity = 0
 
-		self.sliding_friction = 0.5
+		self.sliding_friction = 5
+
+		self.sliding_angle = 0.1
 
 	def on_update(self): # Move randomly if the player is not in range.
 		self.animation_state = "walk_right"
@@ -460,7 +462,7 @@ class Enemy(Entity):
 	def apply_movement(self):
 		if self.direction.length_squared() > 0:
 			self.direction.scale_to_length(self.speed)
-					
+		
 		if self.sliding_velocity > 0.1:
 			self.sliding_velocity -= self.sliding_friction * self.delta_time
 			self.sliding = True
@@ -468,9 +470,8 @@ class Enemy(Entity):
 			self.sliding = False
 			self.sliding_velocity = 0
 		
-		self.proxy_pos_x += self.direction[0] if self.sliding == False else math.cos(self.sliding_angle) * self.sliding_velocity * self.delta_time
-		self.proxy_pos_y += self.direction[1] if self.sliding == False else math.sin(self.sliding_angle) * self.sliding_velocity * self.delta_time
-
+		self.proxy_pos_x += self.direction[0] if self.sliding == False else math.cos(self.sliding_angle) * (self.sliding_velocity * -1 * self.delta_time)
+		self.proxy_pos_y += self.direction[1] if self.sliding == False else math.sin(self.sliding_angle) * (self.sliding_velocity * -1 * self.delta_time)
 
 		self.rect.x = self.proxy_pos_x.get()
 		self.handle_collision("x")
@@ -496,7 +497,6 @@ class Enemy(Entity):
 		self.attacking = True
 		self.hurting = True
 		self.attack_delay_index = 0
-		self.sliding_velocity = 10
 		self.animation_handler.reset_animation()
 
 	def update_attack(self):
@@ -522,7 +522,8 @@ class Enemy(Entity):
 	def on_hurt(self, damage):
 		self.shaking = True
 		self.sliding = True
-		self.sliding_angle = 1.0
+		self.sliding_velocity = 10
+		self.sliding_angle = math.atan2(self.player.rect.center[1] - self.rect.center[1], self.player.rect.center[0] - self.rect.center[0])
 
 class Skeleton(Enemy):
 	def __init__(self, parent, pos):
