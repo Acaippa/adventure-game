@@ -339,7 +339,7 @@ class EnemySpawner01(Entity):
 		if self.spawn_time_index < self.spawn_time:
 			self.spawn_time_index += 1 * self.delta_time
 		else:
-			self.parent.entity_list.append(Skeleton(self.parent, self.pos))
+			self.parent.entity_list.append(Broccoli(self.parent, self.pos))
 			self.spawn_time_index = 0
 
 class EnemySpawner02(Entity):
@@ -359,7 +359,7 @@ class EnemySpawner03(Entity):
 		self.rect = pygame.Rect(1, 1, pos[0], pos[1])
 
 class Enemy(Entity):
-	def __init__(self, parent, pos):
+	def __init__(self, parent, pos, animation_path):
 		super().__init__(parent)
 
 		self.pos = pos
@@ -401,13 +401,17 @@ class Enemy(Entity):
 
 		self.mask = pygame.Mask((20, 20))
 
-		self.animation_handler = Animation(self, f"{os.getcwd()}\\images\\enemies\\skeleton")
+		self.animation_path = animation_path
+
+		self.animation_handler = Animation(self, self.animation_path)
+
+		self.animation_state = "idle_right"
+
+		self.animation_handler.update(self.delta_time)
 
 		self.image_rotated = self.image
 
 		self.rect = self.image.get_rect(topleft = self.pos)
-
-		self.animation_state = "walk_right"
 
 		self.parent_entity_list = self.parent.entity_list
 
@@ -420,7 +424,7 @@ class Enemy(Entity):
 		self.sliding_angle = 0.1
 
 	def on_update(self): # Move randomly if the player is not in range.
-		self.animation_state = "walk_right"
+		self.animation_state = "idle_right"
 
 		if self.get_distance_to_entity(self, self.player) <= self.view_range:
 			self.move_towards_player()
@@ -455,6 +459,9 @@ class Enemy(Entity):
 
 		self.direction[0] = math.cos(self.radians_to_player) * (self.speed * self.delta_time)
 		self.direction[1] = math.sin(self.radians_to_player) * (self.speed * self.delta_time)
+
+		if self.direction[0] != 0 or self.direction[1] != 0:
+			self.animation_state = "walk_right"
 
 	def on_die(self):
 		self.health_bar.die()
@@ -527,9 +534,13 @@ class Enemy(Entity):
 
 class Skeleton(Enemy):
 	def __init__(self, parent, pos):
-		self.image = pygame.image.load("images/enemies/skeleton01.png").convert_alpha()
+		super().__init__(parent, pos, os.path.join("images", "enemies", "skeleton"))
 
-		super().__init__(parent, pos)
+		self.animation_config["walk_right"] = {"speed" : 3}
+
+class Broccoli(Enemy):
+	def __init__(self, parent, pos):
+		super().__init__(parent, pos, os.path.join("images", "enemies", "broccoli"))
 
 		self.animation_config["walk_right"] = {"speed" : 3}
 

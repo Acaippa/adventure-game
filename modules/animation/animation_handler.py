@@ -26,7 +26,7 @@ class Animation:
         for state in os.listdir(self.animation_path):
             state_path = os.path.join(self.animation_path, state)
             self.images[state] = [pygame.image.load(os.path.join(self.animation_path, state, image)) for image in os.listdir(state_path)] # "idle_animation" : [01.png, 02.png, 03.png]
-                
+
 
     def animate_entity(self):
         current_animation_state = self.entity.animation_state
