@@ -1,6 +1,6 @@
 from modules.UI.text import * 
 
-class healthBar(Text):
+class HealthBar(Text):
 	def __init__(self, parent, entity, pos, background="images/UI/healthbarplayer/healthbarbackground.png", foreground="images/UI/healthbarplayer/healthbarvalue.png"):
 		self.entity = entity
 
@@ -37,7 +37,7 @@ class healthBar(Text):
 		self.display_surface.blit(self.background, self.pos)
 		self.display_surface.blit(self.foreground, (self.pos[0] + self.foreground_offset, self.pos[1]))
 
-class floatingHealthBar:
+class FloatingHealthBar:
 	def __init__(self, parent, entity, image_offset=(0, 0)):
 		self.parent = parent
 		self.entity = entity

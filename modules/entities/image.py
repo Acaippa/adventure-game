@@ -1,4 +1,5 @@
-from .entities import*
+from .entity import Entity
+import pygame
 
 class Image(Entity):
     def __init__(self, parent, pos, path):

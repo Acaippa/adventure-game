@@ -1,11 +1,11 @@
 import pygame
-from modules.levels.map_loader import *
+from modules.levels.map_loader import MapLoader
 from shortcuts import *
 import math
 from modules.settings import *
-from modules.UI.health_bar import *
-from modules.UI.inventory import *
-from modules.entities.ent_image import*
+from modules.UI.health_bar import HealthBar
+from modules.UI.inventory import Inventory
+from modules.entities.image import Image
 
 class Level:
 	def __init__(self, parent):
@@ -31,9 +31,9 @@ class Level:
 
 		self.map_loader.load_csv("map/map..csv")
 
-		self.inventory = inventory(self, ("left", "bottom"))
+		self.inventory = Inventory(self, ("left", "bottom"))
 
-		self.health_bar = healthBar(self, self.player, pos=("left", 158))
+		self.health_bar = HealthBar(self, self.player, pos=("left", 158))
 
 		self.background_image = Image(self, (0, 0), "images/map_new.png")
 

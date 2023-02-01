@@ -1,6 +1,6 @@
 from modules.UI.text import*
 
-class inventory(Text):
+class Inventory(Text):
 	def __init__(self, parent, pos):
 		self.parent = parent
 

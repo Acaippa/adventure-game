@@ -1,4 +1,12 @@
-from modules.entities.entities import*
+from modules.entities.player import Player
+from modules.entities.tree import Tree
+from modules.entities.enemy_spawner01 import EnemySpawner01
+from modules.entities.enemy_spawner02 import EnemySpawner02
+from modules.entities.enemy_spawner03 import EnemySpawner03
+from modules.entities.enemies.skeleton import Skeleton
+from modules.entities.enemies.broccoli import Broccoli
+from modules.entities.entity import Entity
+
 
 class MapLoader:
 	def __init__(self, level):
