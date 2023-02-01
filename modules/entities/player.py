@@ -40,10 +40,6 @@ class Player(Entity):
 
 		self.animation_handler = Animation(self, f"{os.getcwd()}\\images\\player")
 
-		self.turn_angles = {"-45 0" : self.face_right, "0 45" : self.face_right, "45 135" : self.face_down, "135 180" : self.face_left, "-180 -135" : self.face_left, "-135 -45" : self.face_up}
-
-		self.facing = "r"
-
 		self.attacking = False
 
 		self.hurting = False
@@ -55,7 +51,7 @@ class Player(Entity):
 
 		self.handle_input()
 
-		self.turn_towards_cursor()
+		self.turn_towards_pos(pygame.mouse.get_pos(), (self.pos[0] * PPP, self.pos[1] * PPP))
 
 		self.handle_attack()
 
@@ -114,14 +110,6 @@ class Player(Entity):
 
 	def move_left(self):
 		self.direction[0] = -self.speed * self.delta_time
-
-	def turn_towards_cursor(self):
-		self.flipped = False
-		angle_to_cursor = math.degrees(get_angle((self.pos[0] * PPP, self.pos[1] * PPP), pygame.mouse.get_pos()))
-		for angle in self.turn_angles:
-			from_, to = int(angle.split(" ")[0]), int(angle.split(" ")[1])
-			if angle_to_cursor > from_ and angle_to_cursor < to:
-				self.turn_angles[angle]()
 
 	def face_right(self):
 		self.facing = "r"

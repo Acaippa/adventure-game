@@ -32,6 +32,8 @@ class Entity:
 
 		self.shaking = False
 
+		self.turn_angles = {"-45 0" : self.face_right, "0 45" : self.face_right, "45 135" : self.face_down, "135 180" : self.face_left, "-180 -135" : self.face_left, "-135 -45" : self.face_up}
+
 	def update(self, dt):
 		self.delta_time = dt
 
@@ -105,15 +107,42 @@ class Entity:
 							self.rect.top = obsticle.rect.bottom
 							self.proxy_pos_y.return_value = self.rect.topleft[1]
 
-	def flip_image(self):
-		if self.direction[0] < 0:
-			self.facing = "l"
-			
-		elif self.direction[0] > 0:
-			self.facing = "r"
+	def turn_towards_pos(self, pos2, pos1=None):
+		self.flipped = False
 
-		if self.facing == "l":
-			self.image_rotated = pygame.transform.flip(self.image, True, False)
+		pos1 = (self.rect[0], self.rect[1]) if pos1 == None else pos1
 
-		if self.facing == "r":
-			self.image_rotated = self.image
+		angle_to_pos = math.degrees(get_angle(pos1, pos2))
+		for angle in self.turn_angles:
+			from_, to = int(angle.split(" ")[0]), int(angle.split(" ")[1])
+			if angle_to_pos > from_ and angle_to_pos < to:
+				self.turn_angles[angle]()
+	
+
+	def face_up(self):
+		self.facing = "u"
+		self.on_face_up()
+
+	def face_down(self):
+		self.facing = "d"
+		self.on_face_down()
+
+	def face_left(self):
+		self.facing = "l"
+		self.on_face_left()
+
+	def face_right(self):
+		self.facing = "r"
+		self.on_face_right()
+
+	def on_face_up(self):
+		pass
+
+	def on_face_down(self):
+		pass
+
+	def on_face_right(self):
+		pass
+
+	def on_face_left(self):
+		pass

@@ -85,8 +85,6 @@ class Enemy(Entity):
 		else:
 			self.move_randomly()
 
-		self.flip_image()
-
 		self.animation_handler.update(self.delta_time)
 
 		self.apply_movement()
@@ -109,8 +107,7 @@ class Enemy(Entity):
 		self.direction[0] = cos(self.radians_to_player) * (self.speed * self.delta_time)
 		self.direction[1] = sin(self.radians_to_player) * (self.speed * self.delta_time)
 
-		if self.direction[0] != 0 or self.direction[1] != 0:
-			self.animation_state = "walk_right"
+		# ! self.turn_towards_pos(self.pos, (self.player.rect[0], self.player.rect[1]))
 
 	def on_die(self):
 		self.health_bar.die()
@@ -180,3 +177,9 @@ class Enemy(Entity):
 		self.sliding = True
 		self.sliding_velocity = 10
 		self.sliding_angle = atan2(self.player.rect.center[1] - self.rect.center[1], self.player.rect.center[0] - self.rect.center[0])
+
+	def on_face_right(self):
+		self.image_rotated = self.image
+
+	def on_face_left(self):
+		self.image_rotated = pygame.transform.flip(self.image, True, False)
