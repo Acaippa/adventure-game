@@ -72,7 +72,7 @@ class Enemy(Entity):
 
 		self.sliding_angle = 0.1
 
-	def on_update(self): # Move randomly if the player is not in range.
+	def on_update(self):
 		self.animation_state = "idle_right"
 
 		if self.get_distance_to_entity(self, self.player) <= self.view_range:
