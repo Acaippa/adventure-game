@@ -85,6 +85,8 @@ class Enemy(Entity):
 		else:
 			self.move_randomly()
 
+		self.face_towards_direction()
+
 		self.animation_handler.update(self.delta_time)
 
 		self.apply_movement()
@@ -178,8 +180,13 @@ class Enemy(Entity):
 		self.sliding_velocity = 10
 		self.sliding_angle = atan2(self.player.rect.center[1] - self.rect.center[1], self.player.rect.center[0] - self.rect.center[0])
 
-	def on_face_right(self):
-		self.image_rotated = self.image
+	def face_towards_direction(self):
+		if self.direction[0] < 0:
+			self.image_rotated = pygame.transform.flip(self.image, True, False)
+		else:
+			self.image_rotated = self.image
 
-	def on_face_left(self):
-		self.image_rotated = pygame.transform.flip(self.image, True, False)
+		if self.direction[1] < 0:
+			self.animation_state = "walk_up"
+		else:
+			self.animation_state = "walk_down"
