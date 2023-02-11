@@ -41,8 +41,8 @@ class Inventory(Text):
 
 	def add_item(self, item):
 		for index, slot in enumerate(self.slots):
-			if index < 4 and slot.item == None:
-				slot.item = item
+			if index < 4 and len(slot.items) == 0 or slot.items[0].name == item.name:
+				slot.items.append(item)
 				break
 
 	# TODO add remove item
@@ -55,7 +55,7 @@ class Slot:
 
 		self.display_surface = inventory.display_surface
 
-		self.item = None
+		self.items = []
 
 		self.slot = pygame.image.load("images/UI/inventory/slot.png").convert_alpha()
 
@@ -66,10 +66,12 @@ class Slot:
 	def update(self, dt):
 		self.delta_time = dt
 
+		#! TODO: Show amount of items in each slot.
+
 		self.draw()
 
 	def draw(self):
 		self.display_surface.blit(self.slot, self.pos)
 
-		if self.item != None:
-			self.display_surface.blit(self.item.image, self.pos)
+		if len(self.items) > 0:
+			self.display_surface.blit(self.items[0].image, self.pos)

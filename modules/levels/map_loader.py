@@ -5,6 +5,7 @@ from modules.entities.enemy_spawner02 import EnemySpawner02
 from modules.entities.enemy_spawner03 import EnemySpawner03
 from modules.entities.enemies.skeleton import Skeleton
 from modules.entities.enemies.broccoli import Broccoli
+from modules.entities.berries.berry import Berry
 from modules.entities.entity import Entity
 
 
@@ -14,6 +15,7 @@ class MapLoader:
 		self.entity_list = {"p" : Player, "0" : Tree, "-1" : Entity, "1" : EnemySpawner01, "2" : EnemySpawner02, "3" : EnemySpawner03}
 
 		self.level.entity_list.append(Skeleton(self.level, (290, 200)))
+		self.level.entity_list.append(Berry(self.level, (290, 200), "images/berries/acai_berries_small.png", "acai")) #! TEMP
 
 	def load_map(self, map): # Loops through any two-dimentional python list and initiate the different entities.
 		for y in range(len(map)):
