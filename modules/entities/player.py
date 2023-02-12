@@ -64,6 +64,8 @@ class Player(Entity):
 	def on_update(self):
 		self.animation_state = "idle"
 
+		self.limit_health()
+
 		self.handle_effects()
 
 		self.handle_input()
@@ -197,3 +199,7 @@ class Player(Entity):
 	def reset_effects(self):
 		for effect in self.effects:
 			setattr(self, effect, eval(self.effects[effect]))
+
+	def limit_health(self):
+		if self.health > 100:
+			self.health = 100

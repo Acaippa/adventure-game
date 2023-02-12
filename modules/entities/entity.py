@@ -78,7 +78,7 @@ class Entity:
 			self.on_hurt(damage, knockback)
 
 	def get_distance_to_entity(self, entity1, entity2):
-		return math.hypot(entity1.rect[1] - entity2.rect[1], entity1.rect[0] - entity2.rect[0])
+		return math.hypot(entity1.rect.center[1] - entity2.rect.center[1], entity1.rect.center[0] - entity2.rect.center[0])
 
 	def handle_collision(self, direction):
 		if len(self.parent.obsticle_list) != 0: # Bare sjekk kollisjon om det er obsticles å sjekke kollisjon imot
