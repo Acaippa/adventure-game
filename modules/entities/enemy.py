@@ -36,7 +36,7 @@ class Enemy(Entity):
 
 		self.health_bar = FloatingHealthBar(self.parent, self, image_offset=(15, 0))
 
-		self.health = 50
+		self.health = 100
 
 		self.parent.enemy_list.append(self)
 
@@ -68,9 +68,11 @@ class Enemy(Entity):
 
 		self.sliding_velocity = 0
 
-		self.sliding_friction = 5
+		self.sliding_friction = 40
 
 		self.sliding_angle = 0.1
+
+		self.force = 1
 
 	def on_update(self):
 		self.animation_state = "idle_right"
@@ -164,7 +166,7 @@ class Enemy(Entity):
 		overlap = self.mask.overlap(self.player.mask, offset)
 
 		if self.attacking and overlap != None and self.hurting: # Stopp å skade spilleren om fienden treffer den 1 gang
-			self.player.hurt(1)
+			self.player.hurt(self.force, 0)
 			self.hurting = False
 
 		if self.animation_handler.resat: # Stopp attack
@@ -174,10 +176,10 @@ class Enemy(Entity):
 		if self.attacking: # Gjør at fienden spiller angrip animasjonen
 			self.animation_state = "attack_right"
 
-	def on_hurt(self, damage):
+	def on_hurt(self, damage, knockback):
 		self.shaking = True
 		self.sliding = True
-		self.sliding_velocity = 10
+		self.sliding_velocity = knockback
 		self.sliding_angle = atan2(self.player.rect.center[1] - self.rect.center[1], self.player.rect.center[0] - self.rect.center[0])
 
 	def face_towards_direction(self):

@@ -15,6 +15,8 @@ class Berry(Entity):
 
         self.name = name
 
+        self.effect_duration = 2
+
     def on_update(self):
         self.handle_pickup()
 
@@ -25,6 +27,14 @@ class Berry(Entity):
             self.parent.inventory.add_item(self)
             self.parent.entity_list.remove(self)
 
-
     def draw(self, offset):
         self.display_surface.blit(self.image, self.pos - offset)
+
+    def on_used(self):
+        self.on_on_used()
+        self.player.knockback = 50
+        self.player.effect_duration_index = self.effect_duration
+        self.parent.inventory.remove_item(self)
+
+    def on_on_used(self):
+        pass

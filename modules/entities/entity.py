@@ -64,18 +64,18 @@ class Entity:
 	def on_die(self):
 		pass
 
-	def on_hurt(self, damage):
+	def on_hurt(self, damage, knockback):
 		pass
 
-	def hurt(self, damage, skip=False): # If skip go straight to on_hurt
+	def hurt(self, damage, knockback, skip=False): # If skip go straight to on_hurt
 		if not skip:
 			if self.health - damage < 0:
 				self.die()
 			else:
 				self.health -= damage
-			self.on_hurt(damage)
+			self.on_hurt(damage, knockback)
 		else:
-			self.on_hurt(damage)
+			self.on_hurt(damage, knockback)
 
 	def get_distance_to_entity(self, entity1, entity2):
 		return math.hypot(entity1.rect[1] - entity2.rect[1], entity1.rect[0] - entity2.rect[0])

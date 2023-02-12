@@ -46,8 +46,25 @@ class Player(Entity):
 
 		self.attack_offset = 5
 
+		self.default_force = 20
+
+		self.default_knockback = 10
+
+		self.force = self.default_force
+
+		self.knockback = self.default_knockback
+
+		self.effect_duration_index = 0
+
+		self.effects = {
+			"force" : "self.default_force", 
+			"knockback" : "self.default_knockback", 
+		}
+
 	def on_update(self):
 		self.animation_state = "idle"
+
+		self.handle_effects()
 
 		self.handle_input()
 
@@ -165,6 +182,18 @@ class Player(Entity):
 			offset = (enemy.rect.center[0] - self.rect.center[0], enemy.rect.center[1] - self.rect.center[1])
 			overlap = self.mask.overlap(enemy.mask, offset)
 
-			if overlap != None:
-				enemy.hurt(1)
+			if overlap != None and self.hurting:
+				enemy.hurt(self.force, self.knockback)
 				self.hurting = False
+
+	def handle_effects(self):
+		if self.effect_duration_index > 0:
+			self.effect_duration_index -= 1 * self.delta_time
+
+		if self.effect_duration_index <= 0 and self.effect_duration_index != -42069:
+			self.effect_duration_index = -42069
+			self.reset_effects()
+		
+	def reset_effects(self):
+		for effect in self.effects:
+			setattr(self, effect, eval(self.effects[effect]))
