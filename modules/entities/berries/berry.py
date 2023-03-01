@@ -23,7 +23,6 @@ class Berry(Entity):
 
     def on_update(self):
         self.handle_pickup()
-        print(self.length_to_player)
 
     def handle_pickup(self):
         self.length_to_player = super().get_distance_to_entity(self, self.player)
