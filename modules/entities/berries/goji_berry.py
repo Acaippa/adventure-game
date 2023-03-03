@@ -12,4 +12,4 @@ class GojiBerry(Berry):
 
     def on_on_used(self):
         self.player.knockback = self.knockback_effect
-        self.player.foce = self.force_effect
+        self.player.force = self.force_effect

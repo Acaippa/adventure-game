@@ -79,7 +79,8 @@ class Slot:
 		mouse = pygame.mouse.get_pos()
 
 		if self.rect.collidepoint(mouse[0] / PPP, mouse[1] / PPP) and len(self.items) != 0:
-			self.items[0].on_used()
+			if self.inventory.parent.player.effect_duration_index < 0:
+				self.items[0].on_used()
 
 		self.draw()
 
