@@ -61,6 +61,8 @@ class Player(Entity):
 			"knockback" : "self.default_knockback", 
 		}
 
+		self.enemies_hurt = []
+
 	def on_update(self):
 		self.animation_state = "idle"
 
@@ -166,7 +168,7 @@ class Player(Entity):
 		if self.attacking == False:
 			self.animation_handler.reset_animation()
 			self.attacking = True
-			self.hurting = True
+			self.enemies_hurt = []
 
 	def handle_attack(self):
 		if self.attacking and self.animation_handler.resat == False:
@@ -184,9 +186,10 @@ class Player(Entity):
 			offset = (enemy.rect.center[0] - self.rect.center[0], enemy.rect.center[1] - self.rect.center[1])
 			overlap = self.mask.overlap(enemy.mask, offset)
 
-			if overlap != None and self.hurting:
-				enemy.hurt(self.force, self.knockback)
-				self.hurting = False
+			if overlap != None:
+				if enemy not in self.enemies_hurt:
+					enemy.hurt(self.force, self.knockback)
+					self.enemies_hurt.append(enemy)
 
 	def handle_effects(self):
 		if self.effect_duration_index > 0:
