@@ -48,7 +48,7 @@ class Player(Entity):
 
 		self.default_force = 20
 
-		self.default_knockback = 10
+		self.default_knockback = 50
 
 		self.force = self.default_force
 

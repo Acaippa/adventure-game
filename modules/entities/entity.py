@@ -34,6 +34,14 @@ class Entity:
 
 		self.turn_angles = {"-45 0" : self.face_right, "0 45" : self.face_right, "45 135" : self.face_down, "135 180" : self.face_left, "-180 -135" : self.face_left, "-135 -45" : self.face_up}
 
+		self.sliding = False
+
+		self.sliding_velocity = 0
+
+		self.sliding_friction = 40
+
+		self.sliding_angle = 0.1
+
 	def update(self, dt):
 		self.delta_time = dt
 

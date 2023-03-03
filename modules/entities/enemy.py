@@ -64,14 +64,6 @@ class Enemy(Entity):
 
 		self.parent_entity_list = self.parent.entity_list
 
-		self.sliding = False
-
-		self.sliding_velocity = 0
-
-		self.sliding_friction = 40
-
-		self.sliding_angle = 0.1
-
 		self.force = 1
 
 	def on_update(self):
@@ -127,8 +119,11 @@ class Enemy(Entity):
 			self.sliding = False
 			self.sliding_velocity = 0
 		
-		self.proxy_pos_x += self.direction[0] if self.sliding == False else cos(self.sliding_angle) * (self.sliding_velocity * -1 * self.delta_time)
-		self.proxy_pos_y += self.direction[1] if self.sliding == False else sin(self.sliding_angle) * (self.sliding_velocity * -1 * self.delta_time)
+		self.direction[0] += cos(self.sliding_angle) * (self.sliding_velocity * -1 * self.delta_time)
+		self.direction[1] += sin(self.sliding_angle) * (self.sliding_velocity * -1 * self.delta_time)
+
+		self.proxy_pos_x += self.direction[0]
+		self.proxy_pos_y += self.direction[1]
 
 		self.rect.x = self.proxy_pos_x.get()
 		self.handle_collision("x")
